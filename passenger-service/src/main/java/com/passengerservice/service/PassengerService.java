@@ -1,7 +1,7 @@
 package com.passengerservice.service;
 
-import com.passengerservice.dto.RequestPassenger;
-import com.passengerservice.dto.ResponcePassenger;
+import com.passengerservice.dto.PassengerRequest;
+import com.passengerservice.dto.PassengerResponce;
 import com.passengerservice.model.Passenger;
 
 import java.util.Optional;
@@ -9,8 +9,8 @@ import java.util.Optional;
 
 public interface PassengerService {
 
-  ResponcePassenger createPassenger(RequestPassenger passenger);
+  PassengerResponce createPassenger(PassengerRequest passenger);
   void deletePassenger(Long id) throws Exception;
-  ResponcePassenger updatePassenger(Long id, RequestPassenger passenger) throws Exception;
-  Optional<Passenger> getPassenger(Long id);
+  PassengerResponce updatePassenger(Long id, PassengerRequest passenger) throws Exception;
+  Optional<Passenger> getPassengerById(Long id);
 }
