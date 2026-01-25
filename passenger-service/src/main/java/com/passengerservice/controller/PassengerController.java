@@ -1,5 +1,6 @@
 package com.passengerservice.controller;
 
+
 import com.passengerservice.dto.PassengerRequest;
 import com.passengerservice.dto.PassengerResponce;
 import com.passengerservice.model.Passenger;
@@ -27,7 +28,7 @@ public class PassengerController {
 
   @GetMapping("/{id}")
   public ResponseEntity<Optional<Passenger>> getPassenger(@PathVariable Long id) {
-    return ResponseEntity.ok(passengerService.getPassenger(id));
+    return ResponseEntity.ok(passengerService.getPassengerById(id));
   }
 
   @DeleteMapping("/{id}")
