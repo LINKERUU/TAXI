@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@FeignClient(name = "trip-service", url = "${trip.service.url}")
+@FeignClient(name = "trip-service")
 public interface TripClient {
 
   @GetMapping("/api/trips/{tripId}")
