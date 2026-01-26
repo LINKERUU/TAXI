@@ -11,10 +11,3 @@ public class DriverResponse {
   private CarResponse car;
 }
 
-@Data
-class CarResponse {
-  private Long id;
-  private String brand;
-  private String color;
-  private String licensePlate;
-}
