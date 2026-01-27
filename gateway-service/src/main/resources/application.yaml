@@ -1,0 +1,46 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: gateway-service
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        - id: passenger-service
+          uri: lb://passenger-service
+          predicates:
+            - Path=/api/passengers/**
+
+        - id: driver-service
+          uri: lb://driver-service
+          predicates:
+            - Path=/api/drivers/**
+
+        - id: trip-service
+          uri: lb://trip-service
+          predicates:
+            - Path=/api/trips/**
+
+        - id: rating-service
+          uri: lb://rating-service
+          predicates:
+            - Path=/api/ratings/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: false
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    reactor.netty.http.client: DEBUG
