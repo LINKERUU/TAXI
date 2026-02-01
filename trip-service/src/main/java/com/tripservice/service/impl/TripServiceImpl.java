@@ -1,5 +1,7 @@
 package com.tripservice.service.impl;
 
+import com.tripservice.client.grpc.DriverGrpcClient;
+import com.tripservice.client.grpc.PassengerGrpcClient;
 import com.tripservice.dto.StatusUpdateRequest;
 import com.tripservice.dto.TripRequest;
 import com.tripservice.dto.TripResponse;
@@ -21,7 +23,8 @@ public class TripServiceImpl implements TripService {
 
   private final TripRepository tripRepository;
   private final TripMapper tripMapper;
-  private final ExternalValidationService externalValidationService; // ДОБАВЬ ЭТУ СТРОКУ!
+  private final PassengerGrpcClient passengerGrpcClient;
+  private final DriverGrpcClient driverGrpcClient;
 
   @Override
   @Transactional
@@ -29,9 +32,7 @@ public class TripServiceImpl implements TripService {
     log.info("Creating trip for driver {} and passenger {}",
             request.getDriverId(), request.getPassengerId());
 
-    // Используем Feign Clients для валидации - ЗАМЕНИ ЭТУ ЧАСТЬ!
-    externalValidationService.validateDriver(request.getDriverId());
-    externalValidationService.validatePassenger(request.getPassengerId());
+    validateDriverAndPassenger(request.getDriverId(), request.getPassengerId());
 
     Trip trip = tripMapper.toEntity(request);
     Trip savedTrip = tripRepository.save(trip);
@@ -55,9 +56,7 @@ public class TripServiceImpl implements TripService {
 
     Trip trip = tripRepository.findById(id);
 
-    // Используем Feign Clients для валидации - ЗАМЕНИ ЭТУ ЧАСТЬ!
-    externalValidationService.validateDriver(request.getDriverId());
-    externalValidationService.validatePassenger(request.getPassengerId());
+    validateDriverAndPassenger(request.getDriverId(), request.getPassengerId());
 
     tripMapper.updateEntityFromRequest(request, trip);
     Trip updatedTrip = tripRepository.save(trip);
@@ -92,13 +91,7 @@ public class TripServiceImpl implements TripService {
     return tripMapper.toResponse(updatedTrip);
   }
 
-  // Удали старый метод validateDriverAndPassenger - ОН НЕ НУЖЕН!
-  // private void validateDriverAndPassenger(Long driverId, Long passengerId) {
-  //     ...
-  // }
-
   private void validateStatusTransition(TripStatus current, TripStatus next) {
-    // ... остальной код без изменений
     if (current == TripStatus.COMPLETED || current == TripStatus.CANCELLED) {
       throw new IllegalArgumentException(
               String.format("Cannot change status from %s to %s", current, next)
@@ -111,12 +104,21 @@ public class TripServiceImpl implements TripService {
               String.format("Cannot change status from %s to %s", current, next)
       );
     }
-
     if (current == TripStatus.ACCEPTED &&
             !(next == TripStatus.DRIVER_EN_ROUTE || next == TripStatus.CANCELLED)) {
       throw new IllegalArgumentException(
               String.format("Cannot change status from %s to %s", current, next)
       );
+    }
+  }
+
+  private void validateDriverAndPassenger(Long driverId, Long passengerId) {
+    if (!passengerGrpcClient.validatePassenger(passengerId)) {
+      throw new IllegalArgumentException("Invalid passenger ID: " + passengerId);
+    }
+
+    if (!driverGrpcClient.validateDriver(driverId)) {
+      throw new IllegalArgumentException("Invalid driver ID: " + driverId);
     }
   }
 }
