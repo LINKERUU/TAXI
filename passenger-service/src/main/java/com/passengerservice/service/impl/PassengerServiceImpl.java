@@ -26,7 +26,6 @@ public class PassengerServiceImpl implements PassengerService {
   public PassengerResponce createPassenger(PassengerRequest request) {
     log.info("Creating passenger with email: {}", request.getEmail());
 
-    // 2. Создание Passenger entity
     Passenger passenger = Passenger.builder()
             .name(request.getName())
             .email(request.getEmail())
@@ -34,7 +33,6 @@ public class PassengerServiceImpl implements PassengerService {
             .deleted(false)
             .build();
 
-    // 3. Сохранение в БД
     Passenger savedPassenger = passengerRepository.save(passenger);
     log.info("Passenger created with ID: {}", savedPassenger.getId());
 
@@ -53,20 +51,16 @@ public class PassengerServiceImpl implements PassengerService {
   public PassengerResponce updatePassenger(Long id, PassengerRequest request) throws Exception {
     log.info("Updating passenger with ID: {}", id);
 
-    // 1. Находим существующего пассажира по ID из URL (а не из тела запроса!)
     Passenger existingPassenger = passengerRepository.findByIdAndDeletedFalse(id)
             .orElseThrow(() -> new Exception("Passenger not found with id: " + id));
 
-    // 3. Обновляем поля
     existingPassenger.setName(request.getName());
     existingPassenger.setEmail(request.getEmail());
     existingPassenger.setPhone(request.getPhone());
 
-    // 4. Сохраняем обновленного пассажира
     Passenger updatedPassenger = passengerRepository.save(existingPassenger);
     log.info("Passenger with ID {} updated", id);
 
-    // 5. Маппинг в DTO
     return modelMapper.map(updatedPassenger, PassengerResponce.class);
   }
 
