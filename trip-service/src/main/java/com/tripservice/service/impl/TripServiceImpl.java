@@ -10,6 +10,7 @@ import com.tripservice.model.Trip;
 import com.tripservice.model.enums.TripStatus;
 import com.tripservice.repository.TripRepository;
 import com.tripservice.service.TripService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class TripServiceImpl implements TripService {
 
   @Override
   @Transactional
+  @CircuitBreaker(name = "tripService", fallbackMethod = "createTripFallback")
   public TripResponse createTrip(TripRequest request) {
     log.info("Creating trip for driver {} and passenger {}",
             request.getDriverId(), request.getPassengerId());
@@ -41,7 +43,19 @@ public class TripServiceImpl implements TripService {
     return tripMapper.toResponse(savedTrip);
   }
 
+  public TripResponse createTripFallback(TripRequest request, Throwable e) {
+    log.error("Circuit Breaker triggered for createTrip. Driver: {}, Passenger: {}. Error: {}",
+            request.getDriverId(), request.getPassengerId(), e.getMessage());
+
+    throw new IllegalStateException(
+            "Cannot create trip at the moment. External services are unavailable. " +
+                    "Please try again later. Error: " + e.getMessage()
+    );
+  }
+
+
   @Override
+  @CircuitBreaker(name = "tripService", fallbackMethod = "createTripFallback")
   public TripResponse getTripById(Long id) {
     log.debug("Fetching trip with ID: {}", id);
 
@@ -49,8 +63,17 @@ public class TripServiceImpl implements TripService {
     return tripMapper.toResponse(trip);
   }
 
+  public TripResponse getTripByIdFallback(Long id, Throwable e) {
+    log.warn("Circuit Breaker fallback for getTripById: {}. Error: {}", id, e.getMessage());
+
+    Trip trip = tripRepository.findById(id);
+
+    return tripMapper.toFallbackResponse(trip);
+  }
+
   @Override
   @Transactional
+  @CircuitBreaker(name = "tripService", fallbackMethod = "updateTripFallback")
   public TripResponse updateTrip(Long id, TripRequest request) {
     log.info("Updating trip with ID: {}", id);
 
@@ -62,6 +85,15 @@ public class TripServiceImpl implements TripService {
     Trip updatedTrip = tripRepository.save(trip);
 
     return tripMapper.toResponse(updatedTrip);
+  }
+
+  public TripResponse updateTripFallback(Long id, TripRequest request, Throwable e) {
+    log.error("Circuit Breaker triggered for updateTrip. ID: {}. Error: {}", id, e.getMessage());
+
+    throw new IllegalStateException(
+            "Cannot update trip at the moment. External services are unavailable. " +
+                    "Please try again later. Error: " + e.getMessage()
+    );
   }
 
   @Override
@@ -78,6 +110,7 @@ public class TripServiceImpl implements TripService {
 
   @Override
   @Transactional
+  @CircuitBreaker(name = "tripService", fallbackMethod = "updateTripStatusFallback")
   public TripResponse updateTripStatus(Long id, StatusUpdateRequest request) {
     log.info("Updating trip status to {} for trip ID: {}", request.getStatus(), id);
 
@@ -89,6 +122,20 @@ public class TripServiceImpl implements TripService {
     Trip updatedTrip = tripRepository.save(trip);
 
     return tripMapper.toResponse(updatedTrip);
+  }
+
+  public TripResponse updateTripStatusFallback(Long id, StatusUpdateRequest request, Throwable e) {
+    log.warn("Circuit Breaker fallback for updateTripStatus. ID: {}, Status: {}. Error: {}",
+            id, request.getStatus(), e.getMessage());
+
+    Trip trip = tripRepository.findById(id);
+
+    validateStatusTransition(trip.getStatus(), request.getStatus());
+
+    trip.setStatus(request.getStatus());
+    Trip updatedTrip = tripRepository.save(trip);
+
+    return tripMapper.toFallbackResponse(updatedTrip);
   }
 
   private void validateStatusTransition(TripStatus current, TripStatus next) {

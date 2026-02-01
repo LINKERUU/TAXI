@@ -2,28 +2,25 @@ package com.driverservice.service.impl;
 
 import com.driverservice.dto.DriverRequest;
 import com.driverservice.dto.DriverResponse;
-import com.driverservice.mapper.DriverMapper;
 import com.driverservice.model.Car;
 import com.driverservice.model.Driver;
 import com.driverservice.repository.CarRepository;
 import com.driverservice.repository.DriverRepository;
 import com.driverservice.service.DriverService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-<<<<<<< Updated upstream
-import org.modelmapper.ModelMapper;
-=======
 import lombok.extern.slf4j.Slf4j;
->>>>>>> Stashed changes
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
 
   private final DriverRepository driverRepository;
   private final CarRepository carRepository;
-  private final DriverMapper driverMapper;
+  private final ModelMapper modelMapper = new ModelMapper();
 
   @Override
   @Transactional
@@ -37,42 +34,58 @@ public class DriverServiceImpl implements DriverService {
       throw new RuntimeException("Car with this license plate already exists");
     }
 
-    var car = driverMapper.toCar(request);
-    var savedCar = carRepository.save(car);
+    Car car = Car.builder()
+            .brand(request.getCarBrand())
+            .color(request.getCarColor())
+            .licensePlate(request.getCarLicensePlate())
+            .build();
 
-    var driver = driverMapper.toEntity(request);
-    driver.setCar(savedCar);
-    var savedDriver = driverRepository.save(driver);
+    car = carRepository.save(car);
 
-    return driverMapper.toDriverResponse(savedDriver);
+    Driver driver = Driver.builder()
+            .name(request.getName())
+            .email(request.getEmail())
+            .phone(request.getPhone())
+            .car(car)
+            .build();
+
+    driver = driverRepository.save(driver);
+
+    return modelMapper.map(driver, DriverResponse.class);
   }
 
   @Override
-  @Transactional(readOnly = true)
   public DriverResponse getDriverById(Long id) {
-    var driver = driverRepository.findByIdAndDeletedFalse(id)
+    Driver driver = driverRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Driver not found with id: " + id));
-    return driverMapper.toDriverResponse(driver);
+    return modelMapper.map(driver, DriverResponse.class);
   }
 
   @Override
   @Transactional
   public DriverResponse updateDriver(Long id, DriverRequest request) {
-    var driver = driverRepository.findByIdAndDeletedFalse(id)
+    Driver driver = driverRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Driver not found with id: " + id));
 
-    driverMapper.updateDriverFromRequest(request,driver);
-    driverMapper.updateCarFromRequest(request,driver.getCar());
+    driver.setName(request.getName());
+    driver.setEmail(request.getEmail());
+    driver.setPhone(request.getPhone());
 
-    var updateDriver = driverRepository.save(driver);
+    Car car = driver.getCar();
+    car.setBrand(request.getCarBrand());
+    car.setColor(request.getCarColor());
+    car.setLicensePlate(request.getCarLicensePlate());
 
-    return driverMapper.toDriverResponse(updateDriver);
+    driverRepository.save(driver);
+    carRepository.save(car);
+
+    return modelMapper.map(driver, DriverResponse.class);
   }
 
   @Override
   @Transactional
   public void deleteDriver(Long id) {
-    var driver = driverRepository.findById(id)
+    Driver driver = driverRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Driver not found with id: " + id));
 
     driver.setDeleted(true);
