@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "passenger-service")
-public interface PassengerClient {
+public interface  PassengerClient {
 
   @GetMapping("/api/passengers/{passengerId}")
   PassengerResponse getPassengerById(@PathVariable("passengerId") Long passengerId);
