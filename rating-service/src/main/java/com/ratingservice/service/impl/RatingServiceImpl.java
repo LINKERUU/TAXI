@@ -7,6 +7,7 @@ import com.ratingservice.mapper.RatingMapper;
 import com.ratingservice.model.Rating;
 import com.ratingservice.repository.RatingRepository;
 import com.ratingservice.service.RatingService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class RatingServiceImpl implements RatingService {
 
   @Override
   @Transactional
+  @CircuitBreaker(name = "ratingService", fallbackMethod = "createRatingFallback")
   public RatingResponse createRating(RatingRequest request) {
     log.info("Creating rating for trip {} by {}",
             request.getTripId(), request.getRaterType());
@@ -40,6 +42,99 @@ public class RatingServiceImpl implements RatingService {
     log.info("Rating created with ID: {}", savedRating.getId());
 
     return createResponseWithTripData(savedRating, trip);
+  }
+
+  @Override
+  @CircuitBreaker(name = "ratingService", fallbackMethod = "getRatingByIdFallback")
+  public RatingResponse getRatingById(Long id) {
+    log.debug("Fetching rating with ID: {}", id);
+
+    Rating rating = ratingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Rating not found with id: " + id));
+
+    TripClient.TripResponse trip = getTripDetails(rating.getTripId());
+    return createResponseWithTripData(rating, trip);
+  }
+
+  @Override
+  @Transactional
+  public RatingResponse updateRating(Long id, RatingRequest request) {
+    log.info("Updating rating with ID: {}", id);
+
+    Rating rating = ratingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Rating not found with id: " + id));
+
+    if (!rating.getTripId().equals(request.getTripId())) {
+      throw new IllegalArgumentException("Cannot change trip ID for existing rating");
+    }
+
+    TripClient.TripResponse trip = getTripDetails(request.getTripId());
+    validateRating(request, trip);
+
+    ratingMapper.updateEntityFromRequest(request, rating);
+    Rating updatedRating = ratingRepository.save(rating);
+
+    return createResponseWithTripData(updatedRating, trip);
+  }
+
+  public RatingResponse updateRatingFallback(Long id, RatingRequest request, Throwable throwable) {
+    log.error("Circuit Breaker triggered for updateRating. ID: {}. Error: {}", id, throwable.getMessage());
+    if (throwable instanceof RuntimeException) {
+
+      throw (RuntimeException) throwable;
+    }
+
+    throw new RuntimeException(
+            "Cannot update rating at the moment. Trip service is unavailable. " +
+                    "Please try again later. Error: " + throwable.getMessage()
+    );
+  }
+
+  @Override
+  @Transactional
+  public void deleteRating(Long id) {
+    log.info("Deleting rating with ID: {}", id);
+
+    if (!ratingRepository.existsById(id)) {
+      throw new RuntimeException("Rating not found with id: " + id);
+    }
+
+    ratingRepository.deleteById(id);
+  }
+
+  public RatingResponse createRatingFallback(RatingRequest request, Throwable throwable) {
+    log.error("Circuit Breaker triggered for createRating. Trip: {}, Rater: {}. Error: {}",
+            request.getTripId(), request.getRaterType(), throwable.getMessage());
+
+    if (throwable instanceof IllegalArgumentException) {
+      throw (IllegalArgumentException) throwable;
+    }
+
+    throw new RuntimeException(
+            "Cannot create rating at the moment. Trip service is unavailable. " +
+                    "Please try again later. Error: " + throwable.getMessage()
+    );
+  }
+
+  public RatingResponse getRatingByIdFallback(Long id, Throwable throwable) {
+    log.warn("Circuit Breaker fallback for getRatingById: {}. Error: {}", id, throwable.getMessage());
+
+    Rating rating = ratingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Rating not found with id: " + id));
+
+    return createFallbackResponse(rating);
+  }
+
+  private RatingResponse createFallbackResponse(Rating rating) {
+    return RatingResponse.builder()
+            .id(rating.getId())
+            .tripId(rating.getTripId())
+            .raterType(rating.getRaterType())
+            .score(rating.getScore())
+            .comment(rating.getComment())
+            .driverId(-1L)
+            .passengerId(-1L)
+            .build();
   }
 
   private TripClient.TripResponse getTripDetails(Long tripId) {
@@ -83,50 +178,6 @@ public class RatingServiceImpl implements RatingService {
     response.setDriverId(trip.driverId());
     response.setPassengerId(trip.passengerId());
     return response;
-  }
-
-  @Override
-  public RatingResponse getRatingById(Long id) {
-    log.debug("Fetching rating with ID: {}", id);
-
-    Rating rating = ratingRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Rating not found with id: " + id));
-
-    TripClient.TripResponse trip = getTripDetails(rating.getTripId());
-    return createResponseWithTripData(rating, trip);
-  }
-
-  @Override
-  @Transactional
-  public RatingResponse updateRating(Long id, RatingRequest request) {
-    log.info("Updating rating with ID: {}", id);
-
-    Rating rating = ratingRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Rating not found with id: " + id));
-
-    if (!rating.getTripId().equals(request.getTripId())) {
-      throw new IllegalArgumentException("Cannot change trip ID for existing rating");
-    }
-
-    TripClient.TripResponse trip = getTripDetails(request.getTripId());
-    validateRating(request, trip);
-
-    ratingMapper.updateEntityFromRequest(request, rating);
-    Rating updatedRating = ratingRepository.save(rating);
-
-    return createResponseWithTripData(updatedRating, trip);
-  }
-
-  @Override
-  @Transactional
-  public void deleteRating(Long id) {
-    log.info("Deleting rating with ID: {}", id);
-
-    if (!ratingRepository.existsById(id)) {
-      throw new RuntimeException("Rating not found with id: " + id);
-    }
-
-    ratingRepository.deleteById(id);
   }
 
 }

@@ -9,10 +9,12 @@ import com.driverservice.repository.DriverRepository;
 import com.driverservice.service.DriverService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
 

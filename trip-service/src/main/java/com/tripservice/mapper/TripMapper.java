@@ -30,6 +30,11 @@ public interface TripMapper {
   @Mapping(target = "destinationAddress", ignore = true)
   void updateEntityFromRequest(TripRequest request, @MappingTarget Trip trip);
 
+  @Named("toFallbackResponse")
+  TripResponse toFallbackResponse(Trip trip);
+
+
+
   default Address mapToAddress(String addressString) {
     if (addressString == null || addressString.isBlank()) {
       return null;
