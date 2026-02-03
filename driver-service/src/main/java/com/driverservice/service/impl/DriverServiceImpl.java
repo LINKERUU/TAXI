@@ -3,15 +3,10 @@ package com.driverservice.service.impl;
 import com.driverservice.dto.DriverRequest;
 import com.driverservice.dto.DriverResponse;
 import com.driverservice.mapper.DriverMapper;
-import com.driverservice.model.Car;
-import com.driverservice.model.Driver;
 import com.driverservice.repository.CarRepository;
 import com.driverservice.repository.DriverRepository;
 import com.driverservice.service.DriverService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
