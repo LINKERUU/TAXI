@@ -9,15 +9,15 @@ import com.driverservice.repository.CarRepository;
 import com.driverservice.repository.DriverRepository;
 import com.driverservice.service.DriverService;
 import lombok.RequiredArgsConstructor;
-<<<<<<< Updated upstream
-import org.modelmapper.ModelMapper;
-=======
 import lombok.extern.slf4j.Slf4j;
->>>>>>> Stashed changes
+import org.modelmapper.ModelMapper;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
 

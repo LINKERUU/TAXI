@@ -1,7 +1,7 @@
 package com.passengerservice.service.impl;
 
-import com.passengerservice.dto.RequestPassenger;
-import com.passengerservice.dto.ResponcePassenger;
+import com.passengerservice.dto.PassengerRequest;
+import com.passengerservice.dto.PassengerResponce;
 import com.passengerservice.model.Passenger;
 import com.passengerservice.repository.PassengerRepository;
 import com.passengerservice.service.PassengerService;
@@ -23,10 +23,9 @@ public class PassengerServiceImpl implements PassengerService {
 
   @Override
   @Transactional
-  public ResponcePassenger createPassenger(RequestPassenger request) {
+  public PassengerResponce createPassenger(PassengerRequest request) {
     log.info("Creating passenger with email: {}", request.getEmail());
 
-    // 2. Создание Passenger entity
     Passenger passenger = Passenger.builder()
             .name(request.getName())
             .email(request.getEmail())
@@ -34,42 +33,35 @@ public class PassengerServiceImpl implements PassengerService {
             .deleted(false)
             .build();
 
-    // 3. Сохранение в БД
     Passenger savedPassenger = passengerRepository.save(passenger);
     log.info("Passenger created with ID: {}", savedPassenger.getId());
 
-    // 4. Маппинг Entity -> DTO для ответа
-    ResponcePassenger response = modelMapper.map(savedPassenger, ResponcePassenger.class);
-    return response;
+    return modelMapper.map(savedPassenger, PassengerResponce.class);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public Optional<Passenger> getPassenger(Long id) {
+  public Optional<Passenger> getPassengerById(Long id) {
     log.info("Getting passenger with ID: {}", id);
     return passengerRepository.findByIdAndDeletedFalse(id);
   }
 
   @Override
   @Transactional
-  public ResponcePassenger updatePassenger(Long id, RequestPassenger request) throws Exception {
+  public PassengerResponce updatePassenger(Long id, PassengerRequest request) throws Exception {
     log.info("Updating passenger with ID: {}", id);
 
-    // 1. Находим существующего пассажира по ID из URL (а не из тела запроса!)
     Passenger existingPassenger = passengerRepository.findByIdAndDeletedFalse(id)
             .orElseThrow(() -> new Exception("Passenger not found with id: " + id));
 
-    // 3. Обновляем поля
     existingPassenger.setName(request.getName());
     existingPassenger.setEmail(request.getEmail());
     existingPassenger.setPhone(request.getPhone());
 
-    // 4. Сохраняем обновленного пассажира
     Passenger updatedPassenger = passengerRepository.save(existingPassenger);
     log.info("Passenger with ID {} updated", id);
 
-    // 5. Маппинг в DTO
-    return modelMapper.map(updatedPassenger, ResponcePassenger.class);
+    return modelMapper.map(updatedPassenger, PassengerResponce.class);
   }
 
   @Override
