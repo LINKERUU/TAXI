@@ -1,6 +1,5 @@
 package com.passengerservice.grpc;
 
-import com.passengerservice.mapper.PassengerMapper;
 import com.passengerservice.repository.PassengerRepository;
 import com.taxi.grpc.passenger.*;
 import io.grpc.stub.StreamObserver;
@@ -16,7 +15,6 @@ public class PassengerGrpcService extends PassengerServiceGrpc.PassengerServiceI
 
   private final PassengerService passengerService;
   private final PassengerRepository passengerRepository;
-  private final PassengerMapper passengerMapper;
 
   @Override
   public void getPassenger(PassengerIdRequest request,
@@ -27,10 +25,10 @@ public class PassengerGrpcService extends PassengerServiceGrpc.PassengerServiceI
       var passenger = passengerService.getPassengerById(request.getPassengerId());
 
       PassengerResponse response = PassengerResponse.newBuilder()
-              .setId(passenger.getId())
-              .setName(passenger.getName())
-              .setEmail(passenger.getEmail())
-              .setPhone(passenger.getPhone())
+              .setId(passenger.orElseThrow().getId())
+              .setName(passenger.get().getName())
+              .setEmail(passenger.get().getEmail())
+              .setPhone(passenger.get().getPhone())
               .build();
 
       responseObserver.onNext(response);
