@@ -1,5 +1,6 @@
 package com.tripservice.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tripservice.client.grpc.DriverGrpcClient;
 import com.tripservice.client.grpc.PassengerGrpcClient;
 import com.tripservice.dto.StatusUpdateRequest;
@@ -10,6 +11,7 @@ import com.tripservice.model.Trip;
 import com.tripservice.model.enums.TripStatus;
 import com.tripservice.repository.TripRepository;
 import com.tripservice.service.TripService;
+import com.tripservice.service.producer.TripProducerEvent;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ public class TripServiceImpl implements TripService {
   private final TripMapper tripMapper;
   private final PassengerGrpcClient passengerGrpcClient;
   private final DriverGrpcClient driverGrpcClient;
+  private final TripProducerEvent tripProducerEvent;
 
   @Override
   @Transactional
@@ -117,6 +120,14 @@ public class TripServiceImpl implements TripService {
     Trip trip = tripRepository.findById(id);
 
     validateStatusTransition(trip.getStatus(), request.getStatus());
+
+    if(request.getStatus()== TripStatus.COMPLETED){
+      tripProducerEvent.sendTripCompletedEvent(
+              trip.getId(),
+              trip.getDriverId(),
+              trip.getPassengerId()
+      );
+    }
 
     trip.setStatus(request.getStatus());
     Trip updatedTrip = tripRepository.save(trip);
