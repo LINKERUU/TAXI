@@ -16,7 +16,6 @@ public class PassengerGrpcService extends PassengerServiceGrpc.PassengerServiceI
 
   private final PassengerService passengerService;
   private final PassengerRepository passengerRepository;
-  private final PassengerMapper passengerMapper;
 
   @Override
   public void getPassenger(PassengerIdRequest request,
