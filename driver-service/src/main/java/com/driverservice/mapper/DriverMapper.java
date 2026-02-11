@@ -1,6 +1,5 @@
 package com.driverservice.mapper;
 
-import com.driverservice.dto.CarResponse;
 import com.driverservice.dto.DriverRequest;
 import com.driverservice.dto.DriverResponse;
 import com.driverservice.model.Car;
