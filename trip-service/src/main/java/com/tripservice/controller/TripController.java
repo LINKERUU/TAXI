@@ -48,5 +48,4 @@ public class TripController {
     TripResponse response = tripService.updateTripStatus(id, request);
     return ResponseEntity.ok(response);
   }
-
 }

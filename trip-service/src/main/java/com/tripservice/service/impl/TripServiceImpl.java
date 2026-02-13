@@ -168,6 +168,26 @@ public class TripServiceImpl implements TripService {
               String.format("Cannot change status from %s to %s", current, next)
       );
     }
+
+    if (current == TripStatus.DRIVER_EN_ROUTE &&
+            !(next == TripStatus.PASSENGER_ON_BOARD || next == TripStatus.CANCELLED)) {
+      throw new IllegalArgumentException(
+              String.format("Cannot change status from %s to %s", current, next)
+      );
+    }
+    if (current == TripStatus.PASSENGER_ON_BOARD &&
+            !(next == TripStatus.IN_PROGRESS || next == TripStatus.CANCELLED)) {
+      throw new IllegalArgumentException(
+              String.format("Cannot change status from %s to %s", current, next)
+      );
+
+    }
+    if (current == TripStatus.IN_PROGRESS &&
+            !(next == TripStatus.COMPLETED || next == TripStatus.CANCELLED)) {
+      throw new IllegalArgumentException(
+              String.format("Cannot change status from %s to %s", current, next)
+      );
+    }
   }
 
   private void validateDriverAndPassenger(Long driverId, Long passengerId) {
