@@ -2,7 +2,7 @@ package com.passengerservice.controller;
 
 
 import com.passengerservice.dto.PassengerRequest;
-import com.passengerservice.dto.PassengerResponce;
+import com.passengerservice.dto.PassengerResponse;
 import com.passengerservice.model.Passenger;
 import com.passengerservice.service.PassengerService;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +21,13 @@ public class PassengerController {
   private final PassengerService passengerService;
 
   @PostMapping
-  public ResponseEntity<PassengerResponce> createPassenger(@RequestBody PassengerRequest passenger) {
+  public ResponseEntity<PassengerResponse> createPassenger(@RequestBody PassengerRequest passenger) {
     return ResponseEntity.status(HttpStatus.CREATED)
             .body(passengerService.createPassenger(passenger));
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Optional<Passenger>> getPassenger(@PathVariable Long id) {
+  public ResponseEntity<PassengerResponse> getPassenger(@PathVariable Long id) {
     return ResponseEntity.ok(passengerService.getPassengerById(id));
   }
 
@@ -38,7 +38,7 @@ public class PassengerController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<PassengerResponce> updatePassenger(@PathVariable Long id, @RequestBody PassengerRequest passenger) throws Exception {
+  public ResponseEntity<PassengerResponse> updatePassenger(@PathVariable Long id, @RequestBody PassengerRequest passenger) throws Exception {
     return ResponseEntity.ok(passengerService.updatePassenger(id,passenger));
   }
 
