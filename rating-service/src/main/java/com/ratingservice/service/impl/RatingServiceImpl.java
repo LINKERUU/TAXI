@@ -39,9 +39,94 @@ public class RatingServiceImpl implements RatingService {
 
     log.info("Rating created with ID: {}", savedRating.getId());
 
-    return createResponseWithTripData(savedRating, trip);
+    return ratingMapper.toResponse(savedRating);
   }
 
+<<<<<<< Updated upstream
+=======
+  @Override
+  @CircuitBreaker(name = "ratingService", fallbackMethod = "getRatingByIdFallback")
+  public RatingResponse getRatingById(Long id) {
+    log.debug("Fetching rating with ID: {}", id);
+
+    Rating rating = ratingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Rating not found with id: " + id));
+
+    TripClient.TripResponse trip = getTripDetails(rating.getTripId());
+    return ratingMapper.toResponse(rating);
+  }
+
+  @Override
+  @Transactional
+  public RatingResponse updateRating(Long id, RatingRequest request) {
+    log.info("Updating rating with ID: {}", id);
+
+    Rating rating = ratingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Rating not found with id: " + id));
+
+    if (!rating.getTripId().equals(request.getTripId())) {
+      throw new IllegalArgumentException("Cannot change trip ID for existing rating");
+    }
+
+    TripClient.TripResponse trip = getTripDetails(request.getTripId());
+    validateRating(request, trip);
+
+    ratingMapper.updateEntityFromRequest(request, rating);
+    Rating updatedRating = ratingRepository.save(rating);
+
+    return ratingMapper.toResponse(updatedRating);
+  }
+
+  public RatingResponse updateRatingFallback(Long id, RatingRequest request, Throwable throwable) {
+    log.error("Circuit Breaker triggered for updateRating. ID: {}. Error: {}", id, throwable.getMessage());
+    throw new RuntimeException(
+            "Cannot update rating at the moment. Trip service is unavailable. " +
+                    "Please try again later. Error: " + throwable.getMessage()
+    );
+  }
+
+  @Override
+  @Transactional
+  public void deleteRating(Long id) {
+    log.info("Deleting rating with ID: {}", id);
+
+    if (!ratingRepository.existsById(id)) {
+      throw new RuntimeException("Rating not found with id: " + id);
+    }
+
+    ratingRepository.deleteById(id);
+  }
+
+  public RatingResponse createRatingFallback(RatingRequest request, Throwable throwable) {
+    log.error("Circuit Breaker triggered for createRating. Trip: {}, Rater: {}. Error: {}",
+            request.getTripId(), request.getRaterType(), throwable.getMessage());
+
+    throw new RuntimeException(
+            "Cannot create rating at the moment. Trip service is unavailable. " +
+                    "Please try again later. Error: " + throwable.getMessage()
+    );
+  }
+
+  public RatingResponse getRatingByIdFallback(Long id, Throwable throwable) {
+    log.warn("Circuit Breaker fallback for getRatingById: {}. Error: {}", id, throwable.getMessage());
+
+    Rating rating = ratingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Rating not found with id: " + id));
+
+    return createFallbackResponse(rating);
+  }
+
+  private RatingResponse createFallbackResponse(Rating rating) {
+    return RatingResponse.builder()
+            .id(rating.getId())
+            .tripId(rating.getTripId())
+            .raterType(rating.getRaterType())
+            .score(rating.getScore())
+            .comment(rating.getComment())
+            .build();
+  }
+
+>>>>>>> Stashed changes
   private TripClient.TripResponse getTripDetails(Long tripId) {
     try {
       TripClient.TripResponse trip = tripClient.getTripById(tripId);
@@ -74,15 +159,8 @@ public class RatingServiceImpl implements RatingService {
               throw new RuntimeException(
                       String.format("%s has already rated trip %d",
                               request.getRaterType(), request.getTripId())
-              );
-            });
-  }
-
-  private RatingResponse createResponseWithTripData(Rating rating, TripClient.TripResponse trip) {
-    RatingResponse response = ratingMapper.toResponse(rating);
-    response.setDriverId(trip.driverId());
-    response.setPassengerId(trip.passengerId());
-    return response;
+          );
+      });
   }
 
   @Override
