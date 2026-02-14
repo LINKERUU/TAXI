@@ -168,6 +168,7 @@ public class RatingServiceTests {
     Long ratingId = 1L;
     Throwable cause = new RuntimeException("Circuit breaker open");
     when(ratingRepository.findById(ratingId)).thenReturn(Optional.of(rating));
+    when(ratingMapper.toResponse(any(Rating.class))).thenReturn(ratingResponse);
 
     RatingResponse result = ratingService.getRatingByIdFallback(ratingId, cause);
 
