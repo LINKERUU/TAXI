@@ -1,6 +1,5 @@
 package com.passengerservice.grpc;
 
-import com.passengerservice.mapper.PassengerMapper;
 import com.passengerservice.repository.PassengerRepository;
 import com.taxi.grpc.passenger.*;
 import io.grpc.stub.StreamObserver;
@@ -9,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.passengerservice.service.PassengerService;
 import org.springframework.grpc.server.service.GrpcService;
 
+
 @Slf4j
 @GrpcService
 @RequiredArgsConstructor
@@ -16,7 +16,6 @@ public class PassengerGrpcService extends PassengerServiceGrpc.PassengerServiceI
 
   private final PassengerService passengerService;
   private final PassengerRepository passengerRepository;
-  private final PassengerMapper passengerMapper;
 
   @Override
   public void getPassenger(PassengerIdRequest request,
