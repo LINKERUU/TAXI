@@ -113,17 +113,7 @@ public class RatingServiceImpl implements RatingService {
     Rating rating = ratingRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Rating not found with id: " + id));
 
-    return createFallbackResponse(rating);
-  }
-
-  private RatingResponse createFallbackResponse(Rating rating) {
-    return RatingResponse.builder()
-            .id(rating.getId())
-            .tripId(rating.getTripId())
-            .raterType(rating.getRaterType())
-            .score(rating.getScore())
-            .comment(rating.getComment())
-            .build();
+    return ratingMapper.toResponse(rating);
   }
 
 >>>>>>> Stashed changes

@@ -2,14 +2,16 @@ package com.ratingservice.dto;
 
 import com.ratingservice.model.Rating.RaterType;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 >>>>>>> Stashed changes
-import lombok.Data;
-import lombok.NoArgsConstructor;
+=======
+import lombok.Builder;
 
-import java.time.LocalDateTime;
+>>>>>>> Stashed changes
+import lombok.Data;
 
 @Data
 public class RatingResponse {
