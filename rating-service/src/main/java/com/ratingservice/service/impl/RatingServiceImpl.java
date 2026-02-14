@@ -41,7 +41,7 @@ public class RatingServiceImpl implements RatingService {
 
     log.info("Rating created with ID: {}", savedRating.getId());
 
-    return createResponseWithTripData(savedRating, trip);
+    return ratingMapper.toResponse(savedRating);
   }
 
   @Override
@@ -53,7 +53,7 @@ public class RatingServiceImpl implements RatingService {
             .orElseThrow(() -> new RuntimeException("Rating not found with id: " + id));
 
     TripClient.TripResponse trip = getTripDetails(rating.getTripId());
-    return createResponseWithTripData(rating, trip);
+    return ratingMapper.toResponse(rating);
   }
 
   @Override
@@ -74,16 +74,11 @@ public class RatingServiceImpl implements RatingService {
     ratingMapper.updateEntityFromRequest(request, rating);
     Rating updatedRating = ratingRepository.save(rating);
 
-    return createResponseWithTripData(updatedRating, trip);
+    return ratingMapper.toResponse(updatedRating);
   }
 
   public RatingResponse updateRatingFallback(Long id, RatingRequest request, Throwable throwable) {
     log.error("Circuit Breaker triggered for updateRating. ID: {}. Error: {}", id, throwable.getMessage());
-    if (throwable instanceof RuntimeException) {
-
-      throw (RuntimeException) throwable;
-    }
-
     throw new RuntimeException(
             "Cannot update rating at the moment. Trip service is unavailable. " +
                     "Please try again later. Error: " + throwable.getMessage()
@@ -106,10 +101,6 @@ public class RatingServiceImpl implements RatingService {
     log.error("Circuit Breaker triggered for createRating. Trip: {}, Rater: {}. Error: {}",
             request.getTripId(), request.getRaterType(), throwable.getMessage());
 
-    if (throwable instanceof IllegalArgumentException) {
-      throw (IllegalArgumentException) throwable;
-    }
-
     throw new RuntimeException(
             "Cannot create rating at the moment. Trip service is unavailable. " +
                     "Please try again later. Error: " + throwable.getMessage()
@@ -122,19 +113,7 @@ public class RatingServiceImpl implements RatingService {
     Rating rating = ratingRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Rating not found with id: " + id));
 
-    return createFallbackResponse(rating);
-  }
-
-  private RatingResponse createFallbackResponse(Rating rating) {
-    return RatingResponse.builder()
-            .id(rating.getId())
-            .tripId(rating.getTripId())
-            .raterType(rating.getRaterType())
-            .score(rating.getScore())
-            .comment(rating.getComment())
-            .driverId(-1L)
-            .passengerId(-1L)
-            .build();
+    return ratingMapper.toResponse(rating);
   }
 
   private TripClient.TripResponse getTripDetails(Long tripId) {
@@ -169,15 +148,8 @@ public class RatingServiceImpl implements RatingService {
               throw new RuntimeException(
                       String.format("%s has already rated trip %d",
                               request.getRaterType(), request.getTripId())
-              );
-            });
-  }
-
-  private RatingResponse createResponseWithTripData(Rating rating, TripClient.TripResponse trip) {
-    RatingResponse response = ratingMapper.toResponse(rating);
-    response.setDriverId(trip.driverId());
-    response.setPassengerId(trip.passengerId());
-    return response;
+          );
+      });
   }
 
 }
