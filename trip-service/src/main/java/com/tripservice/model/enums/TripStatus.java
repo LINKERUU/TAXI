@@ -12,7 +12,6 @@ public enum TripStatus {
   IN_PROGRESS("В пути к месту назначения"),
   COMPLETED("Завершена"),
   CANCELLED("Отменена");
-
   private final String description;
 
 

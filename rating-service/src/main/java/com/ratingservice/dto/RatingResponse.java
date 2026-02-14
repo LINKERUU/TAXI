@@ -1,19 +1,13 @@
 package com.ratingservice.dto;
 
 import com.ratingservice.model.Rating.RaterType;
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-import lombok.AllArgsConstructor;
-import lombok.Builder;
->>>>>>> Stashed changes
-=======
-import lombok.Builder;
 
->>>>>>> Stashed changes
+
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class RatingResponse {
   private Long id;
   private Long tripId;

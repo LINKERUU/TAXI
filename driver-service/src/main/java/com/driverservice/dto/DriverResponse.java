@@ -1,8 +1,14 @@
 package com.driverservice.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DriverResponse {
   private Long id;
   private String name;
@@ -11,10 +17,3 @@ public class DriverResponse {
   private CarResponse car;
 }
 
-@Data
-class CarResponse {
-  private Long id;
-  private String brand;
-  private String color;
-  private String licensePlate;
-}
