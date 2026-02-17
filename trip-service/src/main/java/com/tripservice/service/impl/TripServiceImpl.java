@@ -1,5 +1,10 @@
 package com.tripservice.service.impl;
 
+<<<<<<< Updated upstream
+=======
+import com.tripservice.client.grpc.DriverGrpcClient;
+import com.tripservice.client.grpc.PassengerGrpcClient;
+>>>>>>> Stashed changes
 import com.tripservice.dto.StatusUpdateRequest;
 import com.tripservice.dto.TripRequest;
 import com.tripservice.dto.TripResponse;
@@ -12,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Slf4j
 @Service
@@ -33,8 +39,8 @@ public class TripServiceImpl implements TripService {
     externalValidationService.validateDriver(request.getDriverId());
     externalValidationService.validatePassenger(request.getPassengerId());
 
-    Trip trip = tripMapper.toEntity(request);
-    Trip savedTrip = tripRepository.save(trip);
+    var trip = tripMapper.toEntity(request);
+    var savedTrip = tripRepository.save(trip);
 
     log.info("Trip created with ID: {}", savedTrip.getId());
     return tripMapper.toResponse(savedTrip);
@@ -44,22 +50,36 @@ public class TripServiceImpl implements TripService {
   public TripResponse getTripById(Long id) {
     log.debug("Fetching trip with ID: {}", id);
 
-    Trip trip = tripRepository.findById(id);
+    var trip = tripRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
     return tripMapper.toResponse(trip);
   }
 
+<<<<<<< Updated upstream
+=======
+  public TripResponse getTripByIdFallback(Long id, Throwable e) {
+    log.warn("Circuit Breaker fallback for getTripById: {}. Error: {}", id, e.getMessage());
+
+    var trip = tripRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
+
+    return tripMapper.toFallbackResponse(trip);
+  }
+
+>>>>>>> Stashed changes
   @Override
   @Transactional
   public TripResponse updateTrip(Long id, TripRequest request) {
     log.info("Updating trip with ID: {}", id);
 
-    Trip trip = tripRepository.findById(id);
+    var trip = tripRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
 
     // Используем Feign Clients для валидации - ЗАМЕНИ ЭТУ ЧАСТЬ!
     externalValidationService.validateDriver(request.getDriverId());
     externalValidationService.validatePassenger(request.getPassengerId());
 
-    tripMapper.updateEntityFromRequest(request, trip);
+    tripMapper.updateEntityFromRequest(request,trip);
     Trip updatedTrip = tripRepository.save(trip);
 
     return tripMapper.toResponse(updatedTrip);
@@ -82,7 +102,8 @@ public class TripServiceImpl implements TripService {
   public TripResponse updateTripStatus(Long id, StatusUpdateRequest request) {
     log.info("Updating trip status to {} for trip ID: {}", request.getStatus(), id);
 
-    Trip trip = tripRepository.findById(id);
+    var trip = tripRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
 
     validateStatusTransition(trip.getStatus(), request.getStatus());
 
@@ -92,10 +113,27 @@ public class TripServiceImpl implements TripService {
     return tripMapper.toResponse(updatedTrip);
   }
 
+<<<<<<< Updated upstream
   // Удали старый метод validateDriverAndPassenger - ОН НЕ НУЖЕН!
   // private void validateDriverAndPassenger(Long driverId, Long passengerId) {
   //     ...
   // }
+=======
+  public TripResponse updateTripStatusFallback(Long id, StatusUpdateRequest request, Throwable e) {
+    log.warn("Circuit Breaker fallback for updateTripStatus. ID: {}, Status: {}. Error: {}",
+            id, request.getStatus(), e.getMessage());
+
+    Trip trip = tripRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
+
+    validateStatusTransition(trip.getStatus(), request.getStatus());
+
+    trip.setStatus(request.getStatus());
+    Trip updatedTrip = tripRepository.save(trip);
+
+    return tripMapper.toFallbackResponse(updatedTrip);
+  }
+>>>>>>> Stashed changes
 
   private void validateStatusTransition(TripStatus current, TripStatus next) {
     // ... остальной код без изменений

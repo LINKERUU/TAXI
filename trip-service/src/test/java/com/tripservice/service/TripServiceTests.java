@@ -167,7 +167,7 @@ public class TripServiceTests {
 
   @Test
   void getTripById_Success() {
-    when(tripRepository.findById(1L)).thenReturn(trip);
+    when(tripRepository.findById(1L)).thenReturn(Optional.ofNullable(trip));
     when(tripMapper.toResponse(trip)).thenReturn(tripResponse);
 
     TripResponse result = tripService.getTripById(1L);
@@ -184,7 +184,7 @@ public class TripServiceTests {
     Long tripId = 1L;
 
     Trip trip = new Trip();
-    when(tripRepository.findById(tripId)).thenReturn(trip);
+    when(tripRepository.findById(tripId)).thenReturn(Optional.of(trip));
 
     TripResponse expectedResponse = TripResponse.builder().build();
     when(tripMapper.toFallbackResponse(trip)).thenReturn(expectedResponse);
@@ -227,7 +227,7 @@ public class TripServiceTests {
             .price(BigDecimal.valueOf(35.00))
             .build();
 
-    when(tripRepository.findById(1L)).thenReturn(trip);
+    when(tripRepository.findById(1L)).thenReturn(Optional.ofNullable(trip));
     when(passengerGrpcClient.validatePassenger(anyLong())).thenReturn(true);
     when(driverGrpcClient.validateDriver(anyLong())).thenReturn(true);
     doNothing().when(tripMapper).updateEntityFromRequest(any(TripRequest.class), any(Trip.class));
@@ -282,7 +282,7 @@ public class TripServiceTests {
             .status(TripStatus.ACCEPTED)
             .build();
 
-    when(tripRepository.findById(1L)).thenReturn(trip);
+    when(tripRepository.findById(1L)).thenReturn(Optional.ofNullable(trip));
     when(tripRepository.save(any(Trip.class))).thenReturn(updatedTrip);
     when(tripMapper.toResponse(any(Trip.class))).thenReturn(updatedResponse);
 
@@ -312,7 +312,7 @@ public class TripServiceTests {
             .status(TripStatus.COMPLETED)
             .build();
 
-    when(tripRepository.findById(1L)).thenReturn(trip);
+    when(tripRepository.findById(1L)).thenReturn(Optional.ofNullable(trip));
     when(tripRepository.save(any(Trip.class))).thenReturn(updatedTrip);
     when(tripMapper.toResponse(any(Trip.class))).thenReturn(updatedResponse);
     doNothing().when(tripProducerEvent).sendTripCompletedEvent(1L, 1L, 2L);
@@ -330,7 +330,7 @@ public class TripServiceTests {
     statusUpdateRequest.setStatus(TripStatus.ACCEPTED);
     Throwable cause = new RuntimeException("Circuit breaker open");
 
-    when(tripRepository.findById(1L)).thenReturn(trip);
+    when(tripRepository.findById(1L)).thenReturn(Optional.ofNullable(trip));
     when(tripRepository.save(any(Trip.class))).thenReturn(trip);
     when(tripMapper.toFallbackResponse(any(Trip.class))).thenReturn(tripResponse);
 
@@ -384,7 +384,7 @@ public class TripServiceTests {
             .status(to)
             .build();
 
-    when(tripRepository.findById(1L)).thenReturn(trip);
+    when(tripRepository.findById(1L)).thenReturn(Optional.ofNullable(trip));
 
     if (shouldBeValid) {
 
