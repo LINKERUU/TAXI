@@ -1,6 +1,5 @@
 package com.tripservice.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tripservice.client.grpc.DriverGrpcClient;
 import com.tripservice.client.grpc.PassengerGrpcClient;
 import com.tripservice.dto.StatusUpdateRequest;
@@ -17,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -39,8 +40,8 @@ public class TripServiceImpl implements TripService {
 
     validateDriverAndPassenger(request.getDriverId(), request.getPassengerId());
 
-    Trip trip = tripMapper.toEntity(request);
-    Trip savedTrip = tripRepository.save(trip);
+    var trip = tripMapper.toEntity(request);
+    var savedTrip = tripRepository.save(trip);
 
     log.info("Trip created with ID: {}", savedTrip.getId());
     return tripMapper.toResponse(savedTrip);
@@ -62,17 +63,20 @@ public class TripServiceImpl implements TripService {
   public TripResponse getTripById(Long id) {
     log.debug("Fetching trip with ID: {}", id);
 
-    Trip trip = tripRepository.findById(id);
+    var trip = tripRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
     return tripMapper.toResponse(trip);
   }
 
   public TripResponse getTripByIdFallback(Long id, Throwable e) {
     log.warn("Circuit Breaker fallback for getTripById: {}. Error: {}", id, e.getMessage());
 
-    Trip trip = tripRepository.findById(id);
+    var trip = tripRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
 
     return tripMapper.toFallbackResponse(trip);
   }
+
 
   @Override
   @Transactional
@@ -80,11 +84,12 @@ public class TripServiceImpl implements TripService {
   public TripResponse updateTrip(Long id, TripRequest request) {
     log.info("Updating trip with ID: {}", id);
 
-    Trip trip = tripRepository.findById(id);
+    var trip = tripRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
 
     validateDriverAndPassenger(request.getDriverId(), request.getPassengerId());
 
-    tripMapper.updateEntityFromRequest(request, trip);
+    tripMapper.updateEntityFromRequest(request,trip);
     Trip updatedTrip = tripRepository.save(trip);
 
     return tripMapper.toResponse(updatedTrip);
@@ -117,7 +122,8 @@ public class TripServiceImpl implements TripService {
   public TripResponse updateTripStatus(Long id, StatusUpdateRequest request) {
     log.info("Updating trip status to {} for trip ID: {}", request.getStatus(), id);
 
-    Trip trip = tripRepository.findById(id);
+    var trip = tripRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
 
     validateStatusTransition(trip.getStatus(), request.getStatus());
 
@@ -139,7 +145,8 @@ public class TripServiceImpl implements TripService {
     log.warn("Circuit Breaker fallback for updateTripStatus. ID: {}, Status: {}. Error: {}",
             id, request.getStatus(), e.getMessage());
 
-    Trip trip = tripRepository.findById(id);
+    Trip trip = tripRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
 
     validateStatusTransition(trip.getStatus(), request.getStatus());
 

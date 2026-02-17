@@ -3,7 +3,6 @@ package com.tripservice.client.grpc;
 import com.taxi.grpc.passenger.PassengerServiceGrpc;
 import com.taxi.grpc.passenger.PassengerIdRequest;
 import com.taxi.grpc.passenger.PassengerResponse;
-import com.taxi.grpc.passenger.PassengerExistsRequest;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import lombok.RequiredArgsConstructor;
@@ -40,20 +39,6 @@ public class PassengerGrpcClient {
 
       log.info("Passenger validated successfully: {}", response.getName());
       return true;
-
-    } catch (StatusRuntimeException e) {
-      log.error("gRPC call failed: {}", e.getStatus().getDescription(), e);
-      return false;
-    }
-  }
-
-  public boolean passengerExists(Long passengerId) {
-    try {
-      PassengerExistsRequest request = PassengerExistsRequest.newBuilder()
-              .setPassengerId(passengerId)
-              .build();
-
-      return getStub().checkPassengerExists(request).getExists();
 
     } catch (StatusRuntimeException e) {
       log.error("gRPC call failed: {}", e.getStatus().getDescription(), e);
