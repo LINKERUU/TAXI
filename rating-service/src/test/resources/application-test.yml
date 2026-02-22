@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: trip-service-test
+  datasource:
+    url: jdbc:tc:postgresql:15-alpine:///testdb
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    username: test
+    password: test
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    defer-datasource-initialization: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    enabled: false
+  cloud:
+    loadbalancer:
+      enabled: false
+    discovery:
+      enabled: false
+
+feign:
+  client:
+    config:
+      default:
+        url: http://localhost:8080
+
+trip-service:
+  url: http://localhost:8080
+
+eureka:
+  client:
+    enabled: false
