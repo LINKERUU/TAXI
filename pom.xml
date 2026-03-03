@@ -18,11 +18,12 @@
         <module>grpc-common</module>
         <module>gateway-service</module>
         <module>discovery-service</module>
+        <module>e2e-tests</module>
     </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <spring-boot.version>4.0.2</spring-boot.version>
+        <spring-boot.version>3.4.2</spring-boot.version>
     </properties>
 </project>
