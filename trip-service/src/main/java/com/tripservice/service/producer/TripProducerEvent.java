@@ -23,6 +23,17 @@ public class TripProducerEvent {
   public void  sendTripCompletedEvent(Long tripId, Long driverId,
                                       Long passengerId) {
     try {
+
+      if (tripId == null) {
+        throw new IllegalArgumentException("Trip ID cannot be null");
+      }
+      if (driverId == null) {
+        throw new IllegalArgumentException("Driver ID cannot be null");
+      }
+      if (passengerId == null) {
+        throw new IllegalArgumentException("Passenger ID cannot be null");
+      }
+
       TripCompletedEvent event = TripCompletedEvent.builder()
               .tripId(tripId)
               .driverId(driverId)

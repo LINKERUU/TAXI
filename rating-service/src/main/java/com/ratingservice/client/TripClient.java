@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 public interface TripClient {
 
   @GetMapping("/api/trips/{tripId}")
-  @CircuitBreaker(name="tripService", fallbackMethod =  "getDriverByIdFallback")
   TripResponse getTripById(@PathVariable("tripId") Long tripId);
 
   record TripResponse(

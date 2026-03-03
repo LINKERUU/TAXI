@@ -3,7 +3,6 @@ package com.tripservice.client.grpc;
 import com.taxi.grpc.driver.DriverServiceGrpc;
 import com.taxi.grpc.driver.DriverIdRequest;
 import com.taxi.grpc.driver.DriverResponse;
-import com.taxi.grpc.driver.DriverExistsRequest;
 import io.grpc.StatusRuntimeException;
 import io.grpc.ManagedChannel;
 import lombok.RequiredArgsConstructor;
@@ -47,18 +46,4 @@ public class DriverGrpcClient {
     }
   }
 
-
-  public boolean driverExists(Long driverId) {
-    try {
-      DriverExistsRequest request = DriverExistsRequest.newBuilder()
-              .setDriverId(driverId)
-              .build();
-
-      return getStub().checkDriverExists(request).getExists();
-
-    } catch (StatusRuntimeException e) {
-      log.error("gRPC call failed: {}", e.getStatus().getDescription(), e);
-      return false;
-    }
-  }
 }
