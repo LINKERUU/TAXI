@@ -3,12 +3,9 @@ package com.passengerservice.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
+@NoArgsConstructor
 @Table(name="passengers")
 public class Passenger {
 
@@ -19,13 +16,37 @@ public class Passenger {
   @Column(name = "name", nullable = false)
   private String name;
 
-  @Column(name = "email", unique = true, nullable = false)
+  @Column(name = "email", nullable = false)
   private String email;
 
-  @Column(name = "phone", nullable = false) 
+  @Column(name = "phone", nullable = false, length = 13)
   private String phone;
 
-  @Builder.Default
   @Column(name = "deleted", nullable = false)
   private boolean deleted = false;
+
+  public Passenger(String name,String email,String phone) {
+    this.name = name;
+    this.email = email;
+    this.phone = phone;
+  }
+
+  public void markAsDeleted() {
+    this.deleted = true;
+  }
+
+  public void changeName(String name) {
+    this.name = name;
+  }
+
+  public void changeEmail(String email) {
+    this.email = email;
+  }
+
+  public void changePhone(String phone) {
+    this.phone = phone;
+  }
 }
+
+
+
