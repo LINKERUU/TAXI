@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package com.taxi.grpc.driver;
+
+option java_multiple_files = true;
+option java_package = "com.taxi.grpc.driver";
+option java_outer_classname = "DriverProto";
+
+
+message DriverIdRequest {
+  int64 driver_id = 1;
+}
+
+message DriverExistsRequest {
+  int64 driver_id = 1;
+}
+
+message DriverResponse {
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+  string phone = 4;
+  string car_color = 5;
+  string car_brand = 6;
+  string car_licensePlat=7;
+}
+
+message DriverExistsResponse {
+  bool exists = 1;
+}
+
+
+service DriverService {
+
+  rpc GetDriver(DriverIdRequest) returns (DriverResponse);
+
+  rpc CheckDriverExists(DriverExistsRequest) returns (DriverExistsResponse);
+
+}

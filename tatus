@@ -1,0 +1,115 @@
+[33ma844dea[m[33m ([m[1;36mHEAD[m[33m, [m[1;32mpassenger-service[m[33m)[m HEAD@{0}: checkout: moving from passenger-service to a844dea75bf12d96f43c12a5edd237b5ead420a7
+[33ma844dea[m[33m ([m[1;36mHEAD[m[33m, [m[1;32mpassenger-service[m[33m)[m HEAD@{1}: reset: moving to HEAD
+[33ma844dea[m[33m ([m[1;36mHEAD[m[33m, [m[1;32mpassenger-service[m[33m)[m HEAD@{2}: reset: moving to a844dea
+[33m5df1b59[m HEAD@{3}: checkout: moving from passenger-service to passenger-service
+[33m5df1b59[m HEAD@{4}: reset: moving to HEAD
+[33m5df1b59[m HEAD@{5}: checkout: moving from passenger-service to passenger-service
+[33m5df1b59[m HEAD@{6}: checkout: moving from main to passenger-service
+[33mc584c78[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{7}: checkout: moving from passenger-service to main
+[33m5df1b59[m HEAD@{8}: checkout: moving from c584c7802a12528040c148196c544297cb2bcb3a to passenger-service
+[33mc584c78[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{9}: checkout: moving from main to c584c7802a12528040c148196c544297cb2bcb3a
+[33mc584c78[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{10}: checkout: moving from passenger-service to main
+[33m5df1b59[m HEAD@{11}: checkout: moving from 0cc68effa5958de72439ecf8b1ad27080e4fc9ec to passenger-service
+[33m0cc68ef[m HEAD@{12}: checkout: moving from c584c7802a12528040c148196c544297cb2bcb3a to 0cc68effa5958de72439ecf8b1ad27080e4fc9ec
+[33mc584c78[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{13}: checkout: moving from main to c584c7802a12528040c148196c544297cb2bcb3a
+[33mc584c78[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{14}: checkout: moving from main to main
+[33mc584c78[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{15}: checkout: moving from passenger-service to main
+[33m5df1b59[m HEAD@{16}: checkout: moving from main to passenger-service
+[33mc584c78[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{17}: checkout: moving from passenger-service to main
+[33m5df1b59[m HEAD@{18}: reset: moving to HEAD~1
+[33ma844dea[m[33m ([m[1;36mHEAD[m[33m, [m[1;32mpassenger-service[m[33m)[m HEAD@{19}: checkout: moving from main to passenger-service
+[33mc584c78[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{20}: checkout: moving from passenger-service to main
+[33ma844dea[m[33m ([m[1;36mHEAD[m[33m, [m[1;32mpassenger-service[m[33m)[m HEAD@{21}: reset: moving to HEAD
+[33ma844dea[m[33m ([m[1;36mHEAD[m[33m, [m[1;32mpassenger-service[m[33m)[m HEAD@{22}: commit: feat: add new custom mapper
+[33m5df1b59[m HEAD@{23}: checkout: moving from main to passenger-service
+[33mc584c78[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{24}: reset: moving to HEAD
+[33mc584c78[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{25}: commit: fix: service fix import
+[33m0cc68ef[m HEAD@{26}: checkout: moving from main to main
+[33m0cc68ef[m HEAD@{27}: branch: Reset to origin/main
+[33m81bcbd6[m HEAD@{28}: checkout: moving from driver-service to main
+[33mdc02af0[m[33m ([m[1;31morigin/driver-service[m[33m, [m[1;32mdriver-service[m[33m)[m HEAD@{29}: pull: Fast-forward
+[33m9b7a91d[m HEAD@{30}: commit: feat: implement DriverMapper with MapStruct for driver-service
+[33m5a13410[m HEAD@{31}: checkout: moving from cirtuir-brekaer_implementation to driver-service
+[33m983f574[m[33m ([m[1;31morigin/cirtuir-brekaer_implementation[m[33m, [m[1;32mcirtuir-brekaer_implementation[m[33m)[m HEAD@{32}: reset: moving to HEAD
+[33m983f574[m[33m ([m[1;31morigin/cirtuir-brekaer_implementation[m[33m, [m[1;32mcirtuir-brekaer_implementation[m[33m)[m HEAD@{33}: commit: feat(trip-service): add Circuit Breaker with fallback methods
+[33mf7fce96[m[33m ([m[1;31morigin/feature/grpc-integration[m[33m, [m[1;32mfeature/grpc-integration[m[33m)[m HEAD@{34}: checkout: moving from feature/grpc-integration to cirtuir-brekaer_implementation
+[33mf7fce96[m[33m ([m[1;31morigin/feature/grpc-integration[m[33m, [m[1;32mfeature/grpc-integration[m[33m)[m HEAD@{35}: commit: feat(grpc): add protobuf definitions and common configuration
+[33m81bcbd6[m HEAD@{36}: checkout: moving from main to feature/grpc-integration
+[33m81bcbd6[m HEAD@{37}: merge gateway-service: Merge made by the 'ort' strategy.
+[33mf31881d[m HEAD@{38}: checkout: moving from gateway-service to main
+[33m83dfad3[m[33m ([m[1;32mgateway-service[m[33m)[m HEAD@{39}: commit: feat: add gateway-service with Spring Cloud Gateway
+[33mf31881d[m HEAD@{40}: checkout: moving from main to gateway-service
+[33mf31881d[m HEAD@{41}: merge discovery-service: Merge made by the 'ort' strategy.
+[33m59c38ab[m HEAD@{42}: checkout: moving from discovery-service to main
+[33m9e195b9[m[33m ([m[1;32mdiscovery-service[m[33m)[m HEAD@{43}: commit: build: fix dependency conflicts and add discovery service configurations
+[33m59c38ab[m HEAD@{44}: checkout: moving from main to discovery-service
+[33m59c38ab[m HEAD@{45}: checkout: moving from 5df1b59a624e0839e6aecd62f42b12b23a2829cb to main
+[33m5df1b59[m HEAD@{46}: checkout: moving from passenger-service to 5df1b59a624e0839e6aecd62f42b12b23a2829cb
+[33m5df1b59[m HEAD@{47}: checkout: moving from main to passenger-service
+[33m59c38ab[m HEAD@{48}: checkout: moving from main to main
+[33m59c38ab[m HEAD@{49}: branch: Reset to origin/main
+[33m59c38ab[m HEAD@{50}: checkout: moving from passenger-service to main
+[33m5df1b59[m HEAD@{51}: pull: Merge made by the 'ort' strategy.
+[33m27833c6[m HEAD@{52}: checkout: moving from driver-service to passenger-service
+[33m5a13410[m HEAD@{53}: checkout: moving from main to driver-service
+[33m59c38ab[m HEAD@{54}: checkout: moving from passenger-service to main
+[33m27833c6[m HEAD@{55}: merge main: Merge made by the 'ort' strategy.
+[33m03750f0[m HEAD@{56}: checkout: moving from main to passenger-service
+[33m59c38ab[m HEAD@{57}: merge driver-service: Merge made by the 'ort' strategy.
+[33m98059ce[m HEAD@{58}: checkout: moving from driver-service to main
+[33m5a13410[m HEAD@{59}: commit: feat(driver): add car management and enhance driver API
+[33me4f543a[m HEAD@{60}: checkout: moving from main to driver-service
+[33m98059ce[m HEAD@{61}: checkout: moving from driver-service to main
+[33me4f543a[m HEAD@{62}: checkout: moving from main to driver-service
+[33m98059ce[m HEAD@{63}: merge rating-service: Merge made by the 'ort' strategy.
+[33m806ecdf[m HEAD@{64}: checkout: moving from rating-service to main
+[33m5ac4825[m[33m ([m[1;32mrating-service[m[33m)[m HEAD@{65}: reset: moving to HEAD
+[33m5ac4825[m[33m ([m[1;32mrating-service[m[33m)[m HEAD@{66}: commit: feat: add rating-service microservice
+[33mec1efda[m[33m ([m[1;31morigin/trip-service[m[33m, [m[1;32mtrip-service[m[33m)[m HEAD@{67}: checkout: moving from trip-service to rating-service
+[33mec1efda[m[33m ([m[1;31morigin/trip-service[m[33m, [m[1;32mtrip-service[m[33m)[m HEAD@{68}: checkout: moving from passenger-service to trip-service
+[33m03750f0[m HEAD@{69}: checkout: moving from driver-service to passenger-service
+[33me4f543a[m HEAD@{70}: checkout: moving from trip-service to driver-service
+[33mec1efda[m[33m ([m[1;31morigin/trip-service[m[33m, [m[1;32mtrip-service[m[33m)[m HEAD@{71}: checkout: moving from driver-service to trip-service
+[33me4f543a[m HEAD@{72}: reset: moving to HEAD
+[33me4f543a[m HEAD@{73}: checkout: moving from passenger-service to driver-service
+[33m03750f0[m HEAD@{74}: reset: moving to HEAD
+[33m03750f0[m HEAD@{75}: checkout: moving from passenger-service to passenger-service
+[33m03750f0[m HEAD@{76}: checkout: moving from main to passenger-service
+[33m806ecdf[m HEAD@{77}: checkout: moving from passenger-service to main
+[33m03750f0[m HEAD@{78}: pull: Fast-forward
+[33m1c483d0[m HEAD@{79}: checkout: moving from driver-service to passenger-service
+[33me4f543a[m HEAD@{80}: checkout: moving from passenger-service to driver-service
+[33m1c483d0[m HEAD@{81}: reset: moving to HEAD
+[33m1c483d0[m HEAD@{82}: checkout: moving from main to passenger-service
+[33m806ecdf[m HEAD@{83}: checkout: moving from 806ecdf28baad948e8c9ed9356acf7aac66c5a48 to main
+[33m806ecdf[m HEAD@{84}: checkout: moving from main to 806ecdf28baad948e8c9ed9356acf7aac66c5a48
+[33m806ecdf[m HEAD@{85}: checkout: moving from trip-service to main
+[33mec1efda[m[33m ([m[1;31morigin/trip-service[m[33m, [m[1;32mtrip-service[m[33m)[m HEAD@{86}: merge passenger-service: Merge made by the 'ort' strategy.
+[33me4ee132[m HEAD@{87}: checkout: moving from main to trip-service
+[33m806ecdf[m HEAD@{88}: checkout: moving from trip-service to main
+[33me4ee132[m HEAD@{89}: checkout: moving from main to trip-service
+[33m806ecdf[m HEAD@{90}: merge driver-service: Merge made by the 'ort' strategy.
+[33m61fc133[m HEAD@{91}: checkout: moving from driver-service to main
+[33me4f543a[m HEAD@{92}: commit: chore(config): update driver service configuration and dependencies
+[33m0fa3181[m HEAD@{93}: checkout: moving from main to driver-service
+[33m61fc133[m HEAD@{94}: merge passenger-service: Merge made by the 'ort' strategy.
+[33m995657a[m HEAD@{95}: checkout: moving from passenger-service to main
+[33m1c483d0[m HEAD@{96}: commit: feat(api): enhance passenger service endpoints and validation
+[33m7a0de77[m HEAD@{97}: checkout: moving from main to passenger-service
+[33m995657a[m HEAD@{98}: checkout: moving from trip-service to main
+[33me4ee132[m HEAD@{99}: commit: feat: implement trip service with CRUD operations
+[33m995657a[m HEAD@{100}: checkout: moving from main to trip-service
+[33m995657a[m HEAD@{101}: merge passenger-service: Merge made by the 'ort' strategy.
+[33m03bca21[m HEAD@{102}: checkout: moving from passenger-service to main
+[33m7a0de77[m HEAD@{103}: commit: refactor: improve passenger service DTO naming and structure
+[33mb63ed8c[m HEAD@{104}: pull: Fast-forward
+[33m6083e8a[m HEAD@{105}: checkout: moving from passenger-service to passenger-service
+[33m6083e8a[m HEAD@{106}: checkout: moving from main to passenger-service
+[33m03bca21[m HEAD@{107}: merge driver-service: Merge made by the 'ort' strategy.
+[33m6083e8a[m HEAD@{108}: checkout: moving from driver-service to main
+[33m0fa3181[m HEAD@{109}: commit: feat: implement driver service with CRUD operations
+[33m6083e8a[m HEAD@{110}: checkout: moving from main to driver-service
+[33m6083e8a[m HEAD@{111}: checkout: moving from main to main
+[33m6083e8a[m HEAD@{112}: checkout: moving from main to main
+[33m6083e8a[m HEAD@{113}: checkout: moving from passenger-service to main
+[33m6083e8a[m HEAD@{114}: commit (initial): feat: implement complete passenger service with CRUD operations

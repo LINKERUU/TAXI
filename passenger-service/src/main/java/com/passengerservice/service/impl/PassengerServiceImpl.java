@@ -1,17 +1,15 @@
 package com.passengerservice.service.impl;
 
 import com.passengerservice.dto.PassengerRequest;
-import com.passengerservice.dto.PassengerResponce;
+import com.passengerservice.dto.PassengerResponse;
+import com.passengerservice.mapper.PassengerMapper;
 import com.passengerservice.model.Passenger;
 import com.passengerservice.repository.PassengerRepository;
 import com.passengerservice.service.PassengerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -19,55 +17,45 @@ import java.util.Optional;
 public class PassengerServiceImpl implements PassengerService {
 
   private final PassengerRepository passengerRepository;
-  private final ModelMapper modelMapper = new ModelMapper();
+  private final PassengerMapper passengerMapper;
 
   @Override
   @Transactional
-  public PassengerResponce createPassenger(PassengerRequest request) {
+  public PassengerResponse createPassenger(PassengerRequest request) {
     log.info("Creating passenger with email: {}", request.getEmail());
 
-    // 2. Создание Passenger entity
-    Passenger passenger = Passenger.builder()
-            .name(request.getName())
-            .email(request.getEmail())
-            .phone(request.getPhone())
-            .deleted(false)
-            .build();
 
-    // 3. Сохранение в БД
+    var passenger = passengerMapper.toEntity(request);
+
     Passenger savedPassenger = passengerRepository.save(passenger);
     log.info("Passenger created with ID: {}", savedPassenger.getId());
 
-    return modelMapper.map(savedPassenger, PassengerResponce.class);
+    return passengerMapper.toPassengerResponse(savedPassenger);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public Optional<Passenger> getPassengerById(Long id) {
+  public PassengerResponse getPassengerById(Long id) {
     log.info("Getting passenger with ID: {}", id);
-    return passengerRepository.findByIdAndDeletedFalse(id);
+    var passenger = passengerRepository.findByIdAndDeletedFalse(id)
+            .orElseThrow(() -> new  RuntimeException("Passenger not found" + id));
+    return passengerMapper.toPassengerResponse(passenger);
   }
 
   @Override
   @Transactional
-  public PassengerResponce updatePassenger(Long id, PassengerRequest request) throws Exception {
+  public PassengerResponse updatePassenger(Long id, PassengerRequest request) throws Exception {
     log.info("Updating passenger with ID: {}", id);
 
-    // 1. Находим существующего пассажира по ID из URL (а не из тела запроса!)
     Passenger existingPassenger = passengerRepository.findByIdAndDeletedFalse(id)
             .orElseThrow(() -> new Exception("Passenger not found with id: " + id));
 
-    // 3. Обновляем поля
-    existingPassenger.setName(request.getName());
-    existingPassenger.setEmail(request.getEmail());
-    existingPassenger.setPhone(request.getPhone());
+    passengerMapper.updatePassengerFromRequest(request, existingPassenger);
 
-    // 4. Сохраняем обновленного пассажира
     Passenger updatedPassenger = passengerRepository.save(existingPassenger);
     log.info("Passenger with ID {} updated", id);
 
-    // 5. Маппинг в DTO
-    return modelMapper.map(updatedPassenger, PassengerResponce.class);
+    return passengerMapper.toPassengerResponse(updatedPassenger);
   }
 
   @Override
