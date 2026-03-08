@@ -6,9 +6,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-
-// Добавить валидацию на телефон
-//min max , regex для телефона
 @Getter
 @Builder
 @AllArgsConstructor
