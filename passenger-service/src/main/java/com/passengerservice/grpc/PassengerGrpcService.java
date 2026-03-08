@@ -1,16 +1,18 @@
 package com.passengerservice.grpc;
 
 import com.passengerservice.model.Passenger;
-import com.taxi.grpc.passenger.*;
+import com.passengerservice.service.PassengerService;
+import com.taxi.grpc.passenger.PassengerIdRequest;
+import com.taxi.grpc.passenger.PassengerResponse;
+import com.taxi.grpc.passenger.PassengerServiceGrpc;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.passengerservice.service.PassengerService;
 import org.springframework.grpc.server.service.GrpcService;
 
 
 @Slf4j
-@GrpcService
+@GrpcService(interceptors = GrpcExceptionInterceptor.class)
 @RequiredArgsConstructor
 public class PassengerGrpcService extends PassengerServiceGrpc.PassengerServiceImplBase {
 
@@ -29,5 +31,4 @@ public class PassengerGrpcService extends PassengerServiceGrpc.PassengerServiceI
     responseObserver.onNext(response);
     responseObserver.onCompleted();
   }
-
 }
