@@ -1,6 +1,7 @@
 package com.tripservice.dto;
 
 import com.tripservice.model.Address;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,13 +17,10 @@ public class TripPatchRequest {
   @Positive(message = "Driver ID must be positive")
   private Long driverId;
 
-  @Positive(message = "Passenger ID must be positive")
-  private Long passengerId;
-
-  @Size(max = 255, message = "Pickup address must not exceed 255 characters")
+  @Valid
   private Address pickupAddress;
 
-  @Size(max = 255, message = "Destination address must not exceed 255 characters")
+  @Valid
   private Address destinationAddress;
 
   @DecimalMin(value = "0.0", inclusive = false)
