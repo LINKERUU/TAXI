@@ -109,7 +109,7 @@ public class TripServiceImpl implements TripService {
     }
   }
 
-  public Trip getExistsTrip(Long id) {
+  private Trip getExistsTrip(Long id) {
     return tripRepository.findById(id)
             .orElseThrow(() -> new TripNotFoundException(id));
   }
