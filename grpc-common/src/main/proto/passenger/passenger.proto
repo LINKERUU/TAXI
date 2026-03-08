@@ -30,7 +30,4 @@ message PassengerExistsResponse {
 service PassengerService {
 
   rpc GetPassenger(PassengerIdRequest) returns (PassengerResponse);
-
-  rpc CheckPassengerExists(PassengerExistsRequest) returns (PassengerExistsResponse);
-
 }

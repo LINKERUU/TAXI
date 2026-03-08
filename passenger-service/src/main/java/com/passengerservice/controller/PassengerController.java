@@ -1,16 +1,13 @@
 package com.passengerservice.controller;
 
-
+import com.passengerservice.dto.PassengerPatchRequest;
 import com.passengerservice.dto.PassengerRequest;
 import com.passengerservice.dto.PassengerResponse;
-import com.passengerservice.model.Passenger;
 import com.passengerservice.service.PassengerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 
 @RestController
@@ -19,27 +16,31 @@ import java.util.Optional;
 public class PassengerController {
 
   private final PassengerService passengerService;
+  private static final String ID = "/{id}";
 
   @PostMapping
-  public ResponseEntity<PassengerResponse> createPassenger(@RequestBody PassengerRequest passenger) {
-    return ResponseEntity.status(HttpStatus.CREATED)
-            .body(passengerService.createPassenger(passenger));
+  @ResponseStatus(HttpStatus.CREATED)
+  public PassengerResponse createPassenger(@Valid @RequestBody PassengerRequest passenger) {
+    return passengerService.createPassenger(passenger);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<PassengerResponse> getPassenger(@PathVariable Long id) {
-    return ResponseEntity.ok(passengerService.getPassengerById(id));
+  @GetMapping(ID)
+  public PassengerResponse getPassenger(@PathVariable Long id) {
+    return passengerService.getPassengerById(id);
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Passenger> deletePassenger(@PathVariable Long id) throws Exception {
+  @DeleteMapping(ID)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deletePassenger(@PathVariable Long id){
     passengerService.deletePassenger(id);
-    return ResponseEntity.noContent().build();
   }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<PassengerResponse> updatePassenger(@PathVariable Long id, @RequestBody PassengerRequest passenger) throws Exception {
-    return ResponseEntity.ok(passengerService.updatePassenger(id,passenger));
+  @PatchMapping(ID)
+  public PassengerResponse patchPassenger(
+          @PathVariable Long id,
+          @Valid @RequestBody PassengerPatchRequest passenger
+  ){
+    return passengerService.patchPassenger(id, passenger);
   }
 
 }

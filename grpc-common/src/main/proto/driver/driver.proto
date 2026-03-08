@@ -33,7 +33,4 @@ message DriverExistsResponse {
 service DriverService {
 
   rpc GetDriver(DriverIdRequest) returns (DriverResponse);
-
-  rpc CheckDriverExists(DriverExistsRequest) returns (DriverExistsResponse);
-
 }

@@ -20,8 +20,8 @@
     <properties>
         <java.version>17</java.version>
         <grpc.version>1.77.1</grpc.version>
-        <protobuf.version>4.33.2</protobuf.version>
-        <spring-grpc.version>1.0.2</spring-grpc.version>
+        <protobuf.version>4.30.2</protobuf.version>
+        <spring-grpc.version>0.8.0</spring-grpc.version>
     </properties>
 
     <dependencies>
@@ -80,21 +80,13 @@
     </dependencyManagement>
 
     <build>
-        <extensions>
-            <extension>
-                <groupId>kr.motd.maven</groupId>
-                <artifactId>os-maven-plugin</artifactId>
-                <version>1.7.1</version>
-            </extension>
-        </extensions>
-
         <plugins>
             <plugin>
                 <groupId>io.github.ascopes</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
                 <version>4.0.3</version>
                 <configuration>
-                    <protocVersion>${protobuf.version}</protocVersion>
+                    <protoc>${protobuf.version}</protoc>
                     <binaryMavenPlugins>
                         <binaryMavenPlugin>
                             <groupId>io.grpc</groupId>

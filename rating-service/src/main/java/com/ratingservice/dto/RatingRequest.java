@@ -2,9 +2,15 @@ package com.ratingservice.dto;
 
 import com.ratingservice.model.Rating.RaterType;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RatingRequest {
 
   @NotNull(message = "Trip ID is required")

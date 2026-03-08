@@ -1,19 +1,8 @@
 package com.tripservice.dto.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public record TripCompletedEvent (
+   Long tripId,
+   Long driverId,
+   Long passengerId
+){}
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class TripCompletedEvent {
-  private Long tripId;
-  private Long driverId;
-  private Long passengerId;
-}

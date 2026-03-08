@@ -1,88 +1,72 @@
 package com.tripservice.service.impl;
 
-<<<<<<< Updated upstream
-=======
 import com.tripservice.client.grpc.DriverGrpcClient;
 import com.tripservice.client.grpc.PassengerGrpcClient;
->>>>>>> Stashed changes
 import com.tripservice.dto.StatusUpdateRequest;
+import com.tripservice.dto.TripPatchRequest;
 import com.tripservice.dto.TripRequest;
 import com.tripservice.dto.TripResponse;
+import com.tripservice.dto.event.TripCompletedEvent;
+import com.tripservice.exception.custom.InvalidTransitionStatusException;
+import com.tripservice.exception.custom.TripNotFoundException;
 import com.tripservice.mapper.TripMapper;
 import com.tripservice.model.Trip;
 import com.tripservice.model.enums.TripStatus;
 import com.tripservice.repository.TripRepository;
 import com.tripservice.service.TripService;
+import com.tripservice.service.outbox.OutboxService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class TripServiceImpl implements TripService {
 
   private final TripRepository tripRepository;
   private final TripMapper tripMapper;
-  private final ExternalValidationService externalValidationService; // ДОБАВЬ ЭТУ СТРОКУ!
+  private final PassengerGrpcClient passengerGrpcClient;
+  private final DriverGrpcClient driverGrpcClient;
+  private final OutboxService outboxService;
+
+  private static final String completedEvent = "trip-completed-event";
 
   @Override
   @Transactional
   public TripResponse createTrip(TripRequest request) {
-    log.info("Creating trip for driver {} and passenger {}",
-            request.getDriverId(), request.getPassengerId());
 
-    // Используем Feign Clients для валидации - ЗАМЕНИ ЭТУ ЧАСТЬ!
-    externalValidationService.validateDriver(request.getDriverId());
-    externalValidationService.validatePassenger(request.getPassengerId());
+    driverGrpcClient.existsDriver(request.getDriverId());
+    passengerGrpcClient.existsPassenger(request.getPassengerId());
 
-    var trip = tripMapper.toEntity(request);
-    var savedTrip = tripRepository.save(trip);
+    Trip trip = tripMapper.toEntity(request);
+    tripRepository.save(trip);
 
-    log.info("Trip created with ID: {}", savedTrip.getId());
-    return tripMapper.toResponse(savedTrip);
+    log.info("Trip created with ID: {}", trip.getId());
+
+    return tripMapper.toResponse(trip);
   }
 
   @Override
   public TripResponse getTripById(Long id) {
-    log.debug("Fetching trip with ID: {}", id);
-
-    var trip = tripRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
-    return tripMapper.toResponse(trip);
+    log.info("Getting trip with ID: {}", id);
+    return tripMapper.toResponse(getExistsTrip(id));
   }
 
-<<<<<<< Updated upstream
-=======
-  public TripResponse getTripByIdFallback(Long id, Throwable e) {
-    log.warn("Circuit Breaker fallback for getTripById: {}. Error: {}", id, e.getMessage());
-
-    var trip = tripRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
-
-    return tripMapper.toFallbackResponse(trip);
-  }
-
->>>>>>> Stashed changes
   @Override
   @Transactional
-  public TripResponse updateTrip(Long id, TripRequest request) {
-    log.info("Updating trip with ID: {}", id);
+  public TripResponse patchTrip(Long id, TripPatchRequest request) {
 
-    var trip = tripRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
+    Trip trip = getExistsTrip(id);
 
-    // Используем Feign Clients для валидации - ЗАМЕНИ ЭТУ ЧАСТЬ!
-    externalValidationService.validateDriver(request.getDriverId());
-    externalValidationService.validatePassenger(request.getPassengerId());
+    applyPatch(trip, request);
 
-    tripMapper.updateEntityFromRequest(request,trip);
-    Trip updatedTrip = tripRepository.save(trip);
+    log.info("Trip with ID {} updated", id);
 
-    return tripMapper.toResponse(updatedTrip);
+    return tripMapper.toResponse(trip);
   }
 
   @Override
@@ -90,91 +74,54 @@ public class TripServiceImpl implements TripService {
   public void deleteTrip(Long id) {
     log.info("Deleting trip with ID: {}", id);
 
-    if (!tripRepository.existsById(id)) {
-      throw new RuntimeException("Trip not found with id: " + id);
-    }
+    getExistsTrip(id);
 
     tripRepository.deleteById(id);
   }
 
+  //переделать в outbox паттерн
   @Override
   @Transactional
   public TripResponse updateTripStatus(Long id, StatusUpdateRequest request) {
-    log.info("Updating trip status to {} for trip ID: {}", request.getStatus(), id);
 
-    var trip = tripRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
+    TripStatus newStatus = request.getStatus();
 
-    validateStatusTransition(trip.getStatus(), request.getStatus());
+    log.info("Updating trip status to {} for trip ID: {}", newStatus, id);
 
-    trip.setStatus(request.getStatus());
-    Trip updatedTrip = tripRepository.save(trip);
+    Trip trip = getExistsTrip(id);
 
-    return tripMapper.toResponse(updatedTrip);
+    checkTransitionStatus(trip.getStatus(), newStatus);
+
+    trip.changeStatus(newStatus);
+
+    if (newStatus == TripStatus.COMPLETED) {
+      TripCompletedEvent event = tripMapper.toCompletedEvent(trip);
+      outboxService.saveEvent(event, completedEvent);
+    }
+
+    return tripMapper.toResponse(trip);
   }
 
-<<<<<<< Updated upstream
-  // Удали старый метод validateDriverAndPassenger - ОН НЕ НУЖЕН!
-  // private void validateDriverAndPassenger(Long driverId, Long passengerId) {
-  //     ...
-  // }
-=======
-  public TripResponse updateTripStatusFallback(Long id, StatusUpdateRequest request, Throwable e) {
-    log.warn("Circuit Breaker fallback for updateTripStatus. ID: {}, Status: {}. Error: {}",
-            id, request.getStatus(), e.getMessage());
 
-    Trip trip = tripRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Trip not found with id: " + id));
-
-    validateStatusTransition(trip.getStatus(), request.getStatus());
-
-    trip.setStatus(request.getStatus());
-    Trip updatedTrip = tripRepository.save(trip);
-
-    return tripMapper.toFallbackResponse(updatedTrip);
+  private void checkTransitionStatus(TripStatus current, TripStatus next) {
+    if (!TripStatus.canTransitionTo(current, next)) {
+      throw new InvalidTransitionStatusException(current, next);
+    }
   }
->>>>>>> Stashed changes
 
-  private void validateStatusTransition(TripStatus current, TripStatus next) {
-    // ... остальной код без изменений
-    if (current == TripStatus.COMPLETED || current == TripStatus.CANCELLED) {
-      throw new IllegalArgumentException(
-              String.format("Cannot change status from %s to %s", current, next)
-      );
-    }
+  public Trip getExistsTrip(Long id) {
+    return tripRepository.findById(id)
+            .orElseThrow(() -> new TripNotFoundException(id));
+  }
 
-    if (current == TripStatus.CREATED &&
-            !(next == TripStatus.ACCEPTED || next == TripStatus.CANCELLED)) {
-      throw new IllegalArgumentException(
-              String.format("Cannot change status from %s to %s", current, next)
-      );
-    }
-
-    if (current == TripStatus.ACCEPTED &&
-            !(next == TripStatus.DRIVER_EN_ROUTE || next == TripStatus.CANCELLED)) {
-      throw new IllegalArgumentException(
-              String.format("Cannot change status from %s to %s", current, next)
-      );
-    }
-
-    if (current == TripStatus.DRIVER_EN_ROUTE &&
-            !(next == TripStatus.PASSENGER_ON_BOARD || next == TripStatus.CANCELLED)) {
-      throw new IllegalArgumentException(
-              String.format("Cannot change status from %s to %s", current, next)
-      );
-    }
-    if (current == TripStatus.PASSENGER_ON_BOARD &&
-            !(next == TripStatus.IN_PROGRESS || next == TripStatus.CANCELLED)) {
-      throw new IllegalArgumentException(
-              String.format("Cannot change status from %s to %s", current, next)
-      );
-
-    }
-    if (current == TripStatus.IN_PROGRESS &&
-            !(next == TripStatus.COMPLETED || next == TripStatus.CANCELLED)) {
-      throw new IllegalArgumentException(
-              String.format("Cannot change status from %s to %s", current, next)
-      );
-    }
+  private void applyPatch(Trip trip, TripPatchRequest request) {
+    Optional.ofNullable(request.getDriverId()).ifPresent(driverId -> {
+      driverGrpcClient.existsDriver(driverId);
+      trip.changeDriverId(driverId);
+    });
+    Optional.ofNullable(request.getPickupAddress())
+            .ifPresent(trip::changePickupAddress);
+    Optional.ofNullable(request.getDestinationAddress()).ifPresent(trip::changeDestinationAddress);
+    Optional.ofNullable(request.getPrice()).ifPresent(trip::changePrice);
   }
 }
