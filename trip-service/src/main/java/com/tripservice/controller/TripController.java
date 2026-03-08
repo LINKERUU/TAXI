@@ -2,50 +2,51 @@ package com.tripservice.controller;
 
 
 import com.tripservice.dto.StatusUpdateRequest;
+import com.tripservice.dto.TripPatchRequest;
 import com.tripservice.dto.TripRequest;
 import com.tripservice.dto.TripResponse;
 import com.tripservice.service.TripService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/trips")
 @RequiredArgsConstructor
 public class TripController {
+
   private final TripService tripService;
+  private static final String ID = "/{id}";
 
   @PostMapping
-  public ResponseEntity<TripResponse> createTrip(@Valid @RequestBody TripRequest request) {
-    return ResponseEntity.status(HttpStatus.CREATED)
-            .body(tripService.createTrip(request));
+  @ResponseStatus(HttpStatus.CREATED)
+  public TripResponse createTrip(@Valid @RequestBody TripRequest request) {
+    return tripService.createTrip(request);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<TripResponse> getTrip(@PathVariable Long id) {
-    return ResponseEntity.ok(tripService.getTripById(id));
+  @GetMapping(ID)
+  public TripResponse getTrip(@PathVariable Long id) {
+    return tripService.getTripById(id);
   }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<TripResponse> updateTrip(
+  @PatchMapping(ID)
+  public TripResponse patchTrip(
           @PathVariable Long id,
-          @Valid @RequestBody TripRequest request) {
-    return ResponseEntity.ok(tripService.updateTrip(id, request));
+          @Valid @RequestBody TripPatchRequest request) {
+    return tripService.patchTrip(id, request);
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteTrip(@PathVariable Long id) {
+  @DeleteMapping(ID)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteTrip(@PathVariable Long id) {
     tripService.deleteTrip(id);
-    return ResponseEntity.noContent().build();
   }
 
-  @PatchMapping("/{id}/status")
-  public ResponseEntity<TripResponse> updateTripStatus(
+  @PatchMapping(ID+"/status")
+  public TripResponse updateTripStatus(
           @PathVariable Long id,
           @Valid @RequestBody StatusUpdateRequest request) {
-    TripResponse response = tripService.updateTripStatus(id, request);
-    return ResponseEntity.ok(response);
+    return tripService.updateTripStatus(id, request);
   }
 }

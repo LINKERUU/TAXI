@@ -1,49 +1,37 @@
 package com.tripservice.client.grpc;
 
-import com.taxi.grpc.driver.DriverServiceGrpc;
 import com.taxi.grpc.driver.DriverIdRequest;
 import com.taxi.grpc.driver.DriverResponse;
-import io.grpc.StatusRuntimeException;
-import io.grpc.ManagedChannel;
+import com.taxi.grpc.driver.DriverServiceGrpc;
+import com.tripservice.exception.custom.ServiceUnavailableException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.grpc.client.GrpcChannelFactory;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class DriverGrpcClient {
 
-  private final GrpcChannelFactory channelFactory;
+  private final DriverServiceGrpc.DriverServiceBlockingStub stub;
 
-  private DriverServiceGrpc.DriverServiceBlockingStub getStub() {
-    ManagedChannel channel = channelFactory.createChannel("driver-service");
-    return DriverServiceGrpc.newBlockingStub(channel);
+  @CircuitBreaker(name = "driverService", fallbackMethod = "existsDriverFallback")
+  public void existsDriver(Long driverId) {
+
+    DriverIdRequest request = DriverIdRequest.newBuilder()
+            .setDriverId(driverId)
+            .build();
+
+    DriverResponse response = stub.getDriver(request);
+
+    log.info("Driver validated successfully: {}", response.getId());
   }
 
-  public boolean validateDriver(Long driverId) {
-    log.info("gRPC: Validating driver ID: {}", driverId);
+  public void existsDriverFallback(Long driverId, Throwable e) {
 
-    try {
-      DriverIdRequest request = DriverIdRequest.newBuilder()
-              .setDriverId(driverId)
-              .build();
+    log.error("Driver service service fallback. id={}", driverId);
 
-      DriverResponse response = getStub().getDriver(request);
-
-      if (response == null) {
-        log.warn("Driver validation failed");
-        return false;
-      }
-
-      log.info("Driver validated successfully: {}", response.getName());
-      return true;
-
-    } catch (StatusRuntimeException e) {
-      log.error("gRPC call failed: {}", e.getStatus().getDescription(), e);
-      return false;
-    }
+    throw new ServiceUnavailableException("Driver service fallback. id=" + driverId, e);
   }
-
 }
