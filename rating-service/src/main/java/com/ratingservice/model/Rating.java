@@ -1,19 +1,14 @@
 package com.ratingservice.model;
 
+import com.ratingservice.model.enums.RaterType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.*;
 
 
 @Entity
-@Table(name = "ratings", uniqueConstraints = @UniqueConstraint(
-   columnNames = {"trip_id", "rater_type"}
-))
-@Setter
+@Table(name = "ratings")
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Rating {
 
   @Id
@@ -21,25 +16,33 @@ public class Rating {
   private Long id;
 
   @Column(name = "trip_id", nullable = false)
-  @NotNull(message = "Trip ID is required")
   private Long tripId;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "rater_type", nullable = false)
-  @NotNull(message = "Rater type is required")
   private RaterType raterType;
 
-  @Column(nullable = false)
-  @Min(value = 1, message = "Rating must be at least 1")
-  @Max(value = 5, message = "Rating must be at most 5")
+  @Column(name = "score", nullable = false)
   private Integer score;
 
-  @Column(length = 1000)
-  @Size(max = 1000, message = "Comment must not exceed 1000 characters")
+  @Column(name = "comment", length = 1000)
   private String comment;
 
-  public enum RaterType {
-    DRIVER,
-    PASSENGER
+  public Rating(Long tripId, RaterType raterType, Integer score, String comment) {
+    this.tripId = tripId;
+    this.raterType = raterType;
+    this.score = score;
+    this.comment = comment;
+  }
+
+  public void changeScore(Integer score) {
+    this.score = score;
+  }
+
+  public void changeComment(String comment) {
+    this.comment = comment;
   }
 }
+
+
+

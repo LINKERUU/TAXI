@@ -1,13 +1,12 @@
 package com.ratingservice.repository;
 
 import com.ratingservice.model.Rating;
+import com.ratingservice.model.enums.RaterType;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Optional;
 
 public interface RatingRepository extends CrudRepository<Rating, Long> {
+  boolean existsByTripIdAndRaterType(Long tripId, RaterType raterType);
 
-  Optional<Rating> findByTripIdAndRaterType(Long tripId, Rating.RaterType raterType);
-
-  boolean existsByTripIdAndRaterType(Long tripId, Rating.RaterType raterType);
+  boolean existsByTripId(Long id);
 }
