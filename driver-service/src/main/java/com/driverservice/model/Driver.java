@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name="drivers")
+@Table(name = "drivers")
 public class Driver {
 
   @Id
@@ -28,7 +28,7 @@ public class Driver {
   private boolean deleted = false;
 
   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "car_id",nullable = false)
+  @JoinColumn(name = "car_id", nullable = false)
   private Car car;
 
   public Driver(String name, String email, String phone, Car car) {
