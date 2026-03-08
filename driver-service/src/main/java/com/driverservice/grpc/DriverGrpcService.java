@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.grpc.server.service.GrpcService;
 
 @Slf4j
-@GrpcService
+@GrpcService(interceptors = GrpcExceptionInterceptor.class)
 @RequiredArgsConstructor
 public class DriverGrpcService extends DriverServiceGrpc.DriverServiceImplBase {
 
