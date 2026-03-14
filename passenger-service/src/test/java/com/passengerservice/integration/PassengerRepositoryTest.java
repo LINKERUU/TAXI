@@ -19,9 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class PassengerRepositoryTest extends TestConfig {
 
-  //Вынести отдельно реальзицию тестов и конфиг среды тестирования
-  //Заменить волшебные переменные и добавить модификаторы доступа
-
   private static final String NAME = "John Doe";
   private static final String EMAIL = "john.doe@gmail.com";
   private static final String PHONE = "+375447743555";
@@ -112,8 +109,7 @@ public class PassengerRepositoryTest extends TestConfig {
   @DisplayName("Should return false when checking non-existent email")
   public void shouldReturnTrueWhenEmailExistsAndNotDeleted() {
 
-    Passenger saved = passengerRepository.save(passenger);
-    passengerRepository.save(saved);
+    passengerRepository.save(passenger);
 
     boolean exists = passengerRepository.existsByEmailAndDeletedFalse(EMAIL);
 
@@ -125,8 +121,7 @@ public class PassengerRepositoryTest extends TestConfig {
   @DisplayName("Should return false when checking email of deleted passenger")
   public void shouldReturnTrueWhenPhoneExistsAndNotDeleted() {
 
-    Passenger saved = passengerRepository.save(passenger);
-    passengerRepository.save(saved);
+    passengerRepository.save(passenger);
 
     boolean exists = passengerRepository.existsByPhoneAndDeletedFalse(PHONE);
 
