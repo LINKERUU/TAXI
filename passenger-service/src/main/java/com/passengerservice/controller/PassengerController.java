@@ -31,7 +31,7 @@ public class PassengerController {
 
   @DeleteMapping(ID)
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deletePassenger(@PathVariable Long id){
+  public void deletePassenger(@PathVariable Long id) {
     passengerService.deletePassenger(id);
   }
 
@@ -39,7 +39,7 @@ public class PassengerController {
   public PassengerResponse patchPassenger(
           @PathVariable Long id,
           @Valid @RequestBody PassengerPatchRequest passenger
-  ){
+  ) {
     return passengerService.patchPassenger(id, passenger);
   }
 

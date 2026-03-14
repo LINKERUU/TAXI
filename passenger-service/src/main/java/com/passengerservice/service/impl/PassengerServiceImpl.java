@@ -86,7 +86,7 @@ public class PassengerServiceImpl implements PassengerService {
   }
 
   private void validatePhoneNotExists(String phone) {
-    if(passengerRepository.existsByPhoneAndDeletedFalse(phone)){
+    if (passengerRepository.existsByPhoneAndDeletedFalse(phone)) {
       throw new DuplicatePhoneException("Phone already exists: " + phone);
     }
   }
@@ -106,7 +106,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     Optional.ofNullable(request.getPhone())
             .filter(phone -> !phone.isBlank())
-            .ifPresent(phone ->{
+            .ifPresent(phone -> {
               validatePhoneNotExists(phone);
               passenger.changePhone(phone);
             });

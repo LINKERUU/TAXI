@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(PassengerController.class)
-class PassengerControllerTest {
+public class PassengerControllerTest {
 
   private static final String BASE_URL = "/api/passengers";
   private static final String BASE_URL_WITH_ID = BASE_URL + "/{id}";
@@ -52,7 +52,7 @@ class PassengerControllerTest {
   private String toJson(Object object) {
     return assertDoesNotThrow(() -> objectMapper.writeValueAsString(object));
   }
-  
+
   @Test
   @DisplayName("POST should return 201 when valid")
   public void shouldCreatePassenger() {

@@ -4,6 +4,7 @@ import com.passengerservice.dto.PassengerPatchRequest;
 import com.passengerservice.dto.PassengerRequest;
 import com.passengerservice.dto.PassengerResponse;
 import com.passengerservice.exception.custom.DuplicateEmailException;
+import com.passengerservice.exception.custom.DuplicatePhoneException;
 import com.passengerservice.exception.custom.PassengerNotFoundException;
 import com.passengerservice.mapper.PassengerMapper;
 import com.passengerservice.model.Passenger;
@@ -81,6 +82,20 @@ public class PassengerServiceTest {
     verify(passengerMapper).toEntity(passengerRequest);
     verify(passengerRepository).save(passenger);
     verify(passengerMapper).toPassengerResponse(passenger);
+  }
+
+  @Test
+  @DisplayName("Should throw DuplicatePhoneException when creating passenger")
+  public void createPassengerThrowsExceptionWhenPhoneExists() {
+    when(passengerRepository.existsByEmailAndDeletedFalse(EMAIL)).thenReturn(false);
+    when(passengerRepository.existsByPhoneAndDeletedFalse(PHONE)).thenReturn(true);
+    assertThrows(DuplicatePhoneException.class,
+            () -> passengerService.createPassenger(passengerRequest));
+
+    verify(passengerRepository).existsByEmailAndDeletedFalse(EMAIL);
+    verify(passengerRepository).existsByPhoneAndDeletedFalse(PHONE);
+    verify(passengerMapper, never()).toEntity(any());
+    verify(passengerRepository, never()).save(any());
   }
 
   @Test

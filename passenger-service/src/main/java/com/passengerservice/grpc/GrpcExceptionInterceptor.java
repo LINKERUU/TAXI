@@ -16,7 +16,7 @@ public class GrpcExceptionInterceptor implements ServerInterceptor {
     ServerCall.Listener<ReqT> listener = serverCallHandler.startCall(serverCall, metadata);
 
     return new ForwardingServerCallListener
-            .SimpleForwardingServerCallListener<>(listener){
+            .SimpleForwardingServerCallListener<>(listener) {
       @Override
       public void onHalfClose() {
         try {
