@@ -5,8 +5,8 @@ import lombok.*;
 
 @Getter
 @Entity
-@NoArgsConstructor
-@Table(name="passengers")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "passengers")
 public class Passenger {
 
   @Id
@@ -25,7 +25,7 @@ public class Passenger {
   @Column(name = "deleted", nullable = false)
   private boolean deleted = false;
 
-  public Passenger(String name,String email,String phone) {
+  public Passenger(String name, String email, String phone) {
     this.name = name;
     this.email = email;
     this.phone = phone;
@@ -47,6 +47,3 @@ public class Passenger {
     this.phone = phone;
   }
 }
-
-
-

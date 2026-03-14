@@ -1,6 +1,7 @@
 package com.passengerservice.exception.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -12,4 +13,5 @@ public record ValidationErrorResponse(
         String path,
         LocalDateTime timestamp,
         Map<String, String> errors
-) {}
+) {
+}
