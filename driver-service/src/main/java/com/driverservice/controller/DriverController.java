@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class DriverController {
 
-  private static final String ID="/{id}";
+  private static final String ID = "/{id}";
   private final DriverService driverService;
 
   @PostMapping
@@ -35,7 +35,7 @@ public class DriverController {
   }
 
   @PatchMapping(ID)
-  public DriverResponse patchDriver(@PathVariable Long id,@Valid @RequestBody DriverPatchRequest driver) {
-    return driverService.patchDriver(id,driver);
+  public DriverResponse patchDriver(@PathVariable Long id, @Valid @RequestBody DriverPatchRequest driver) {
+    return driverService.patchDriver(id, driver);
   }
 }

@@ -12,7 +12,7 @@ public interface DriverMapper {
 
   DriverResponse toDriverResponse(Driver driver);
 
-  @Mapping(target = "car", expression = "java(toCar(request))")
+  @Mapping(target = "car", source = ".")
   Driver toEntity(DriverRequest request);
 
   @Mapping(target = "color", source = "carColor")
@@ -20,4 +20,3 @@ public interface DriverMapper {
   @Mapping(target = "licensePlate", source = "carLicensePlate")
   Car toCar(DriverRequest request);
 }
-

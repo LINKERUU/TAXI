@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface DriverGrpcMapper {
-  DriverResponse toGrpc(Driver driver);
-}
 
+  DriverResponse toGrpc(Driver driver);
+
+}

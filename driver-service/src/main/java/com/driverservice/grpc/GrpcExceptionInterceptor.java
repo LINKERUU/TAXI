@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class GrpcExceptionInterceptor implements ServerInterceptor{
+public class GrpcExceptionInterceptor implements ServerInterceptor {
 
   @Override
   public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(

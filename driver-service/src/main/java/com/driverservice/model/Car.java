@@ -21,7 +21,6 @@ public class Car {
   @Column(name = "brand", nullable = false)
   private String brand;
 
-
   @Column(name = "license_plate", unique = true, nullable = false)
   private String licensePlate;
 
