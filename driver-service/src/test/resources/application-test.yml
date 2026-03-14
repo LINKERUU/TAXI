@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    discovery:
+      enabled: false
+    netflix:
+      eureka:
+        client:
+          register-with-eureka: false
+          fetch-registry: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop

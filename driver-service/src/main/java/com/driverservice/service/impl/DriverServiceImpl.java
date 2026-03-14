@@ -33,6 +33,7 @@ public class DriverServiceImpl implements DriverService {
   public DriverResponse createDriver(DriverRequest request) {
 
     validateEmailNotExists(request.getEmail());
+    validatePhoneNotExists(request.getPhone());
     validateLicensePlateNotExists(request.getCarLicensePlate());
 
     Driver driver = driverMapper.toEntity(request);
@@ -77,25 +78,25 @@ public class DriverServiceImpl implements DriverService {
   }
 
   @Override
-  public Driver getExistsDriver(Long id){
+  public Driver getExistsDriver(Long id) {
     return driverRepository.findByIdAndDeletedFalse(id)
             .orElseThrow(() -> new DriverNotFoundException(id));
   }
 
   private void validateEmailNotExists(String email) {
-    if(driverRepository.existsByEmailAndDeletedFalse(email)){
+    if (driverRepository.existsByEmailAndDeletedFalse(email)) {
       throw new DuplicateEmailException("Email already exists: " + email);
     }
   }
 
   private void validateLicensePlateNotExists(String plate) {
-    if(carRepository.existsByLicensePlate(plate)){
+    if (carRepository.existsByLicensePlate(plate)) {
       throw new DuplicateLicensePlateException("Car with this license plate already exists");
     }
   }
 
   private void validatePhoneNotExists(String phone) {
-    if(driverRepository.existsByPhoneAndDeletedFalse(phone)){
+    if (driverRepository.existsByPhoneAndDeletedFalse(phone)) {
       throw new DuplicatePhoneException("Phone already exists: " + phone);
     }
   }
@@ -115,7 +116,7 @@ public class DriverServiceImpl implements DriverService {
 
     Optional.ofNullable(request.getPhone())
             .filter(phone -> !phone.isBlank())
-            .ifPresent(phone ->{
+            .ifPresent(phone -> {
               validatePhoneNotExists(phone);
               driver.changePhone(phone);
             });
@@ -130,7 +131,7 @@ public class DriverServiceImpl implements DriverService {
 
     Optional.ofNullable(request.getCarLicensePlate())
             .filter(carLicensePlate -> !carLicensePlate.isBlank())
-            .ifPresent(carLicensePlate ->{
+            .ifPresent(carLicensePlate -> {
               validateLicensePlateNotExists(carLicensePlate);
               driver.getCar().changeLicensePlate(carLicensePlate);
             });

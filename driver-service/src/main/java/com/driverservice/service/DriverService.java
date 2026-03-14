@@ -7,8 +7,12 @@ import com.driverservice.model.Driver;
 
 public interface DriverService {
   DriverResponse createDriver(DriverRequest request);
+
   DriverResponse getDriverById(Long id);
+
   DriverResponse patchDriver(Long id, DriverPatchRequest request);
+
   void deleteDriver(Long id);
+
   Driver getExistsDriver(Long id);
 }

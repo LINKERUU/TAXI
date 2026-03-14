@@ -8,6 +8,7 @@ public record ErrorResponse(
         int status,
         String path,
         LocalDateTime timestamp
-){}
+) {
+}
 
 

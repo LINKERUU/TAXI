@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler  {
+public class GlobalExceptionHandler {
 
   @ExceptionHandler(DriverNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
