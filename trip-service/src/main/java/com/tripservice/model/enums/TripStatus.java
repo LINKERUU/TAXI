@@ -15,7 +15,7 @@ public enum TripStatus {
   CANCELLED("Отменена");
   private final String description;
 
-  public static boolean canTransitionTo(TripStatus current,TripStatus next) {
+  public static boolean canTransitionTo(TripStatus current, TripStatus next) {
     return switch (current) {
       case CREATED -> next == ACCEPTED || next == CANCELLED;
       case ACCEPTED -> next == DRIVER_EN_ROUTE || next == CANCELLED;

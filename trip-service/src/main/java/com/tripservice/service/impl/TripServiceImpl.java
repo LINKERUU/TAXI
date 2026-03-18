@@ -10,6 +10,7 @@ import com.tripservice.dto.event.TripCompletedEvent;
 import com.tripservice.exception.custom.InvalidTransitionStatusException;
 import com.tripservice.exception.custom.TripNotFoundException;
 import com.tripservice.mapper.TripMapper;
+import com.tripservice.model.Address;
 import com.tripservice.model.Trip;
 import com.tripservice.model.enums.TripStatus;
 import com.tripservice.repository.TripRepository;
@@ -110,8 +111,7 @@ public class TripServiceImpl implements TripService {
   }
 
   private Trip getExistsTrip(Long id) {
-    return tripRepository.findById(id)
-            .orElseThrow(() -> new TripNotFoundException(id));
+    return tripRepository.findById(id).orElseThrow(() -> new TripNotFoundException(id));
   }
 
   private void applyPatch(Trip trip, TripPatchRequest request) {
@@ -119,9 +119,14 @@ public class TripServiceImpl implements TripService {
       driverGrpcClient.existsDriver(driverId);
       trip.changeDriverId(driverId);
     });
-    Optional.ofNullable(request.getPickupAddress())
-            .ifPresent(trip::changePickupAddress);
-    Optional.ofNullable(request.getDestinationAddress()).ifPresent(trip::changeDestinationAddress);
+    Optional.ofNullable(request.getPickupAddress()).ifPresent(pickupAddress->{
+      Address address = tripMapper.toAddress(pickupAddress);
+      trip.changePickupAddress(address);
+    });
+    Optional.ofNullable(request.getDestinationAddress()).ifPresent(destinationAddress-> {
+      Address address = tripMapper.toAddress(destinationAddress);
+      trip.changeDestinationAddress(address);
+    });
     Optional.ofNullable(request.getPrice()).ifPresent(trip::changePrice);
   }
 }

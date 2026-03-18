@@ -35,8 +35,7 @@ public class OutboxProcessor {
 
         if (completedEvent.equals(event.getEventType())) {
 
-          TripCompletedEvent payload =
-                  objectMapper.readValue(event.getPayload(), TripCompletedEvent.class);
+          TripCompletedEvent payload = objectMapper.readValue(event.getPayload(), TripCompletedEvent.class);
 
           log.info("Event is {}", payload);
           producer.publish(payload);
@@ -44,7 +43,7 @@ public class OutboxProcessor {
         }
 
         event.markProcessed();
-        outboxRepository.save(event);
+
       } catch (Exception e) {
         log.error("Failed processing outbox id={}", event.getId(), e);
       }

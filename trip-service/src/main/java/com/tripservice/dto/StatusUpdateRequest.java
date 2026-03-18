@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class StatusUpdateRequest{
-        @NotNull(message = "Status is required")
-        TripStatus status;
+public class StatusUpdateRequest {
+  @NotNull(message = "Status is required")
+  private TripStatus status;
 }

@@ -1,7 +1,7 @@
 package com.tripservice.repository;
 
 import com.tripservice.model.Trip;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TripRepository extends CrudRepository<Trip, Long> {
+public interface TripRepository extends JpaRepository<Trip, Long> {
 }

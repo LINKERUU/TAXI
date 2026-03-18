@@ -17,22 +17,17 @@ public class OutboxService {
   private final OutboxRepository outboxRepository;
 
   public void saveEvent(TripCompletedEvent event, String eventType) {
-    try{
+    try {
       String payload = objectMapper.writeValueAsString(event);
 
 
-      Outbox outbox = new Outbox(
-              event.tripId(),
-              eventType,
-              payload
-      );
+      Outbox outbox = new Outbox(event.tripId(), eventType, payload);
 
       outboxRepository.save(outbox);
 
       log.info("Outbox saved");
 
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       throw new RuntimeException("Failed to serialize event", e);
     }
   }

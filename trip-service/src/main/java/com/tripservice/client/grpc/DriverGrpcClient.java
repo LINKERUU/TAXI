@@ -19,9 +19,7 @@ public class DriverGrpcClient {
   @CircuitBreaker(name = "driverService", fallbackMethod = "existsDriverFallback")
   public void existsDriver(Long driverId) {
 
-    DriverIdRequest request = DriverIdRequest.newBuilder()
-            .setDriverId(driverId)
-            .build();
+    DriverIdRequest request = DriverIdRequest.newBuilder().setDriverId(driverId).build();
 
     DriverResponse response = stub.getDriver(request);
 
