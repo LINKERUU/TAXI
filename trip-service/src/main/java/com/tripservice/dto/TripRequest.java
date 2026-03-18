@@ -27,11 +27,11 @@ public class TripRequest {
 
   @NotNull(message = "Pickup address is required")
   @Valid
-  private Address pickupAddress;
+  private AddressRequest pickupAddress;
 
   @NotNull(message = "Destination address is required")
   @Valid
-  private Address destinationAddress;
+  private AddressRequest destinationAddress;
 
   @NotNull(message = "Price is required")
   @DecimalMin(value = "0.0", inclusive = false)

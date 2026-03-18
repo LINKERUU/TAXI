@@ -14,8 +14,6 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
-//переделать под exactly once
-
 @Configuration
 public class KafkaProducerConfig {
 
@@ -30,7 +28,7 @@ public class KafkaProducerConfig {
     configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
     configProps.put(ProducerConfig.ACKS_CONFIG, "all");
-    configProps.put(ProducerConfig.RETRIES_CONFIG, 3);
+    configProps.put(ProducerConfig.RETRIES_CONFIG, Integer.MAX_VALUE);
     configProps.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, 5);
     configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
 
@@ -38,7 +36,13 @@ public class KafkaProducerConfig {
   }
 
   @Bean
-  public KafkaTemplate<String, TripCompletedEvent> kafkaTemplate() {
-    return new KafkaTemplate<>(producerFactory());
+  public KafkaTemplate<String, TripCompletedEvent> kafkaTemplate(ProducerFactory<String, TripCompletedEvent> producerFactory) {
+
+    KafkaTemplate<String, TripCompletedEvent> template = new KafkaTemplate<>(producerFactory);
+
+    template.setTransactionIdPrefix("trip-service-");
+
+    return template;
   }
+
 }

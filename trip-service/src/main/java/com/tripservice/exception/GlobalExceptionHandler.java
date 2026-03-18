@@ -43,14 +43,14 @@ public class GlobalExceptionHandler {
   public ErrorResponse handleServiceUnavailable(
           BaseException ex,
           HttpServletRequest request
-  ){
+  ) {
     log.warn("Service unavailable: {}", ex.getMessage());
     return new ErrorResponse(
-      ex.getErrorCode(),
-      ex.getMessage(),
-      HttpStatus.SERVICE_UNAVAILABLE.value(),
-      request.getRequestURI(),
-      LocalDateTime.now()
+            ex.getErrorCode(),
+            ex.getMessage(),
+            HttpStatus.SERVICE_UNAVAILABLE.value(),
+            request.getRequestURI(),
+            LocalDateTime.now()
     );
   }
 
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
   public ErrorResponse handleTransactionStatusException(
           InvalidTransitionStatusException ex,
           HttpServletRequest request
-  ){
+  ) {
     log.warn("Transaction status error: {}", ex.getMessage());
     return new ErrorResponse(
             ex.getErrorCode(),

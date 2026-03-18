@@ -31,9 +31,7 @@ public class TripController {
   }
 
   @PatchMapping(ID)
-  public TripResponse patchTrip(
-          @PathVariable Long id,
-          @Valid @RequestBody TripPatchRequest request) {
+  public TripResponse patchTrip(@PathVariable Long id, @Valid @RequestBody TripPatchRequest request) {
     return tripService.patchTrip(id, request);
   }
 
@@ -43,10 +41,8 @@ public class TripController {
     tripService.deleteTrip(id);
   }
 
-  @PatchMapping(ID+"/status")
-  public TripResponse updateTripStatus(
-          @PathVariable Long id,
-          @Valid @RequestBody StatusUpdateRequest request) {
+  @PatchMapping(ID + "/status")
+  public TripResponse updateTripStatus(@PathVariable Long id, @Valid @RequestBody StatusUpdateRequest request) {
     return tripService.updateTripStatus(id, request);
   }
 }

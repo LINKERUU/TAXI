@@ -20,9 +20,7 @@ public class PassengerGrpcClient {
   public void existsPassenger(Long passengerId) {
     log.info("gRPC: Validating passenger ID: {}", passengerId);
 
-    PassengerIdRequest request = PassengerIdRequest.newBuilder()
-            .setPassengerId(passengerId)
-            .build();
+    PassengerIdRequest request = PassengerIdRequest.newBuilder().setPassengerId(passengerId).build();
     PassengerResponse response = stub.getPassenger(request);
 
     log.info("Passenger validated: {}", response.getId());
@@ -33,6 +31,6 @@ public class PassengerGrpcClient {
 
     log.warn("Passenger service fallback. id={}", passengerId);
 
-    throw new ServiceUnavailableException("Passenger service fallback. id="+ passengerId, e);
+    throw new ServiceUnavailableException("Passenger service fallback. id=" + passengerId, e);
   }
 }

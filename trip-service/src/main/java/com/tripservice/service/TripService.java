@@ -7,8 +7,12 @@ import com.tripservice.dto.TripResponse;
 
 public interface TripService {
   TripResponse createTrip(TripRequest request);
+
   TripResponse getTripById(Long id);
+
   TripResponse patchTrip(Long id, TripPatchRequest request);
+
   void deleteTrip(Long id);
-  TripResponse updateTripStatus(Long id,StatusUpdateRequest status);
+
+  TripResponse updateTripStatus(Long id, StatusUpdateRequest status);
 }

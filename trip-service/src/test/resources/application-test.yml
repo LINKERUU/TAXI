@@ -1,45 +1,13 @@
 spring:
-  application:
-    name: trip-service-test
-  datasource:
-    url: jdbc:tc:postgresql:15-alpine:///testdb?TC_DAEMON=true
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    username: test
-    password: test
+  cloud:
+    discovery:
+      enabled: false
+    netflix:
+      eureka:
+        client:
+          register-with-eureka: false
+          fetch-registry: false
+
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
-    defer-datasource-initialization: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-  liquibase:
-    enabled: false
-  cloud:
-    loadbalancer:
-      enabled: false
-    discovery:
-      enabled: false
-
-feign:
-  client:
-    config:
-      default:
-        url: ${WIREMOCK_URL:http://localhost:8080}
-
-passenger-service:
-  url: ${WIREMOCK_URL:http://localhost:8080}
-
-driver-service:
-  url: ${WIREMOCK_URL:http://localhost:8080}
-
-eureka:
-  client:
-    enabled: false
-
-logging:
-  level:
-    com.tripservice.client: DEBUG
-    org.wiremock: DEBUG
-    root: WARN

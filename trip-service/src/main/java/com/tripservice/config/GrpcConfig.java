@@ -13,39 +13,29 @@ import org.springframework.context.annotation.Configuration;
 public class GrpcConfig {
 
   @Bean(destroyMethod = "shutdown")
-  public ManagedChannel driverChannel(
-          @Value("${spring.grpc.client.channels.driver-service.address}") String address) {
+  public ManagedChannel driverChannel(@Value("${spring.grpc.client.channels.driver-service.address}") String address) {
 
     String[] parts = address.split(":");
 
-    return ManagedChannelBuilder
-            .forAddress(parts[0], Integer.parseInt(parts[1]))
-            .usePlaintext()
-            .build();
+    return ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1])).usePlaintext().build();
   }
 
   @Bean(destroyMethod = "shutdown")
-  public ManagedChannel passengerChannel(
-          @Value("${spring.grpc.client.channels.passenger-service.address}") String address) {
+  public ManagedChannel passengerChannel(@Value("${spring.grpc.client.channels.passenger-service.address}") String address) {
 
     String[] parts = address.split(":");
 
-    return ManagedChannelBuilder
-            .forAddress(parts[0], Integer.parseInt(parts[1]))
-            .usePlaintext()
-            .build();
+    return ManagedChannelBuilder.forAddress(parts[0], Integer.parseInt(parts[1])).usePlaintext().build();
   }
 
   @Bean
-  public DriverServiceGrpc.DriverServiceBlockingStub driverStub(
-          @Qualifier("driverChannel") ManagedChannel channel) {
+  public DriverServiceGrpc.DriverServiceBlockingStub driverStub(@Qualifier("driverChannel") ManagedChannel channel) {
 
     return DriverServiceGrpc.newBlockingStub(channel);
   }
 
   @Bean
-  public PassengerServiceGrpc.PassengerServiceBlockingStub passengerStub(
-          @Qualifier("passengerChannel") ManagedChannel channel) {
+  public PassengerServiceGrpc.PassengerServiceBlockingStub passengerStub(@Qualifier("passengerChannel") ManagedChannel channel) {
 
     return PassengerServiceGrpc.newBlockingStub(channel);
   }

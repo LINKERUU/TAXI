@@ -1,8 +1,10 @@
 package com.tripservice.mapper;
 
+import com.tripservice.dto.AddressRequest;
 import com.tripservice.dto.TripRequest;
 import com.tripservice.dto.TripResponse;
 import com.tripservice.dto.event.TripCompletedEvent;
+import com.tripservice.model.Address;
 import com.tripservice.model.Trip;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,6 +17,8 @@ public interface TripMapper {
   @Mapping(target = "orderTime", source = "orderDateTime")
   TripResponse toResponse(Trip trip);
 
-  @Mapping(target="tripId",source = "id")
+  @Mapping(target = "tripId", source = "id")
   TripCompletedEvent toCompletedEvent(Trip trip);
+
+  Address toAddress(AddressRequest request);
 }
