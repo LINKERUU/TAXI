@@ -55,7 +55,7 @@ public class RatingServiceImpl implements RatingService {
 
     Rating rating = getExistsRating(id);
 
-    applyPatch(rating,request);
+    applyPatch(rating, request);
 
     log.info("Rating with ID {} updated", id);
 
@@ -73,8 +73,7 @@ public class RatingServiceImpl implements RatingService {
   }
 
   private Rating getExistsRating(Long id) {
-    return ratingRepository.findById(id)
-            .orElseThrow(() -> new RatingNotFoundException(id));
+    return ratingRepository.findById(id).orElseThrow(() -> new RatingNotFoundException(id));
   }
 
 
@@ -86,15 +85,11 @@ public class RatingServiceImpl implements RatingService {
   private void validateTripForRating(TripResponse trip) {
 
     if (trip.status() != TripStatus.COMPLETED) {
-      throw new IllegalStateException(
-              "Rating can only be created for completed trips. Trip id=" + trip.id()
-      );
+      throw new IllegalStateException("Rating can only be created for completed trips. Trip id=" + trip.id());
     }
 
     if (ratingRepository.existsByTripId(trip.id())) {
-      throw new IllegalStateException(
-              "Rating already exists for trip id=" + trip.id()
-      );
+      throw new IllegalStateException("Rating already exists for trip id=" + trip.id());
     }
   }
 

@@ -21,8 +21,8 @@ public class EventService {
   public void handleTripCompletedEvent(TripCompletedEvent event, Acknowledgment ack) {
     log.info("Received TripCompletedEvent");
 
-    createRatingIfAbsent(event.tripId(),RaterType.DRIVER,event.driverId());
-    createRatingIfAbsent(event.tripId(),RaterType.PASSENGER,event.passengerId());
+    createRatingIfAbsent(event.tripId(), RaterType.DRIVER, event.driverId());
+    createRatingIfAbsent(event.tripId(), RaterType.PASSENGER, event.passengerId());
 
     ack.acknowledge();
 
@@ -31,14 +31,12 @@ public class EventService {
 
   private void createRatingIfAbsent(Long tripId, RaterType type, Long entityId) {
 
-    boolean exists = ratingRepository.existsByTripIdAndRaterType(tripId, type);
-
-    if (exists) {
+    if (ratingRepository.existsByTripIdAndRaterType(tripId, type)) {
       log.info("{} rating already exists for tripId={}", type, tripId);
       return;
     }
 
-    Rating rating = new Rating(tripId,type,1,null);
+    Rating rating = new Rating(tripId, type, 1, null);
 
     ratingRepository.save(rating);
 

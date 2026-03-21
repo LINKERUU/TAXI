@@ -30,14 +30,13 @@ public class RatingController {
   }
 
   @PatchMapping(ID)
-  public RatingResponse patchRating(
-          @PathVariable Long id, @RequestBody @Valid RatingPatchRequest ratingRequest) {
+  public RatingResponse patchRating(@PathVariable Long id, @RequestBody @Valid RatingPatchRequest ratingRequest) {
     return ratingService.patchRating(id, ratingRequest);
   }
 
   @DeleteMapping(ID)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteRating(@PathVariable Long id) {
-     ratingService.deleteRating(id);
+    ratingService.deleteRating(id);
   }
 }

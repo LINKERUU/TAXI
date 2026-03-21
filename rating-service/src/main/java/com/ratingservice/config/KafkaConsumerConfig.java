@@ -29,8 +29,7 @@ public class KafkaConsumerConfig {
   @Bean
   public ConsumerFactory<String, TripCompletedEvent> consumerFactory() {
 
-    JsonDeserializer<TripCompletedEvent> deserializer =
-            new JsonDeserializer<>(TripCompletedEvent.class);
+    JsonDeserializer<TripCompletedEvent> deserializer = new JsonDeserializer<>(TripCompletedEvent.class);
 
     deserializer.addTrustedPackages("*");
     deserializer.ignoreTypeHeaders();
@@ -38,29 +37,22 @@ public class KafkaConsumerConfig {
     Map<String, Object> configProps = new HashMap<>();
     configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
     configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-    configProps.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,false);
+    configProps.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
     configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-    return new DefaultKafkaConsumerFactory<>(
-            configProps,
-            new StringDeserializer(),
-            deserializer
-    );
+    return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(), deserializer);
   }
 
   @Bean
   public ConcurrentKafkaListenerContainerFactory<String, TripCompletedEvent> kafkaListenerContainerFactory() {
-    ConcurrentKafkaListenerContainerFactory<String, TripCompletedEvent> factory =
-            new ConcurrentKafkaListenerContainerFactory<>();
+    ConcurrentKafkaListenerContainerFactory<String, TripCompletedEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
 
     factory.setConsumerFactory(consumerFactory());
 
     factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
 
-    factory.setCommonErrorHandler(new DefaultErrorHandler(
-            new FixedBackOff(1000L, 3L)
-    ));
+    factory.setCommonErrorHandler(new DefaultErrorHandler(new FixedBackOff(1000L, 3L)));
 
     return factory;
   }

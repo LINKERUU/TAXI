@@ -142,12 +142,6 @@
         </dependency>
 
         <!-- WireMock -->
-        <dependency>
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock-grpc-extension</artifactId>
-            <version>${wiremock-grpc.version}</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.wiremock</groupId>

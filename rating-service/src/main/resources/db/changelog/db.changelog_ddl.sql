@@ -13,3 +13,6 @@ CREATE TABLE IF NOT EXISTS ratings
 
 -- changeset author:ddl-002
 CREATE INDEX idx_ratings_trip_id ON ratings (trip_id);
+
+CREATE UNIQUE INDEX ux_rating_trip_rater
+    ON ratings (trip_id, rater_type);

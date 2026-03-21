@@ -9,7 +9,7 @@ public abstract class BaseException extends RuntimeException {
   private final ErrorCode errorCode;
 
   protected BaseException(String message, ErrorCode errorCode, Throwable cause) {
-    super(message,cause);
+    super(message, cause);
     this.errorCode = errorCode;
   }
 
@@ -17,6 +17,5 @@ public abstract class BaseException extends RuntimeException {
     super(message);
     this.errorCode = errorCode;
   }
-
 }
 
