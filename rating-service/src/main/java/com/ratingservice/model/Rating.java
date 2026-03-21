@@ -2,7 +2,9 @@ package com.ratingservice.model;
 
 import com.ratingservice.model.enums.RaterType;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 @Entity

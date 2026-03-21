@@ -1,9 +1,6 @@
 package com.ratingservice.service.consumer;
 
 import com.ratingservice.dto.TripCompletedEvent;
-import com.ratingservice.model.Rating;
-import com.ratingservice.model.enums.RaterType;
-import com.ratingservice.repository.RatingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -27,6 +24,7 @@ public class RatingConsumerEvent {
   public void consumeTripCompletedEvent(@Payload TripCompletedEvent event, Acknowledgment ack) {
     log.info("Received Kafka message: {}", event);
 
-    eventService.handleTripCompletedEvent(event,ack);
+    eventService.handleTripCompletedEvent(event, ack);
   }
+
 }

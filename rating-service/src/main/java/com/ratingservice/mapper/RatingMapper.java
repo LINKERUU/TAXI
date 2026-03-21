@@ -3,7 +3,7 @@ package com.ratingservice.mapper;
 import com.ratingservice.dto.RatingRequest;
 import com.ratingservice.dto.RatingResponse;
 import com.ratingservice.model.Rating;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface RatingMapper {

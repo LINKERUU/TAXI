@@ -14,7 +14,7 @@ public class TripServiceClient {
 
   private final TripClient tripClient;
 
-  @CircuitBreaker(name = "tripService",fallbackMethod = "getTripByIdFallback")
+  @CircuitBreaker(name = "tripService", fallbackMethod = "getTripByIdFallback")
   public TripResponse getTripById(Long tripId) {
     return tripClient.getTripById(tripId);
   }

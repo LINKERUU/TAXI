@@ -13,4 +13,5 @@ public record ValidationErrorResponse(
         String path,
         LocalDateTime timestamp,
         Map<String, String> errors
-) {}
+) {
+}
